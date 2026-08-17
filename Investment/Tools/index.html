@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tools — Configurable Web Scraper | ArticlesByArticle Investment</title>
+<title>Tools, Configurable Web Scraper | ArticlesByArticle Investment</title>
 <meta name="description" content="A configurable web scraping tool that turns an Excel sheet of URLs into structured JSON, with batching and checkpointing, including pages behind a login.">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -22,7 +22,7 @@ nav{background:var(--dark);padding:0 2rem;display:flex;align-items:center;justif
 .logo-inv{position:absolute;left:76%;top:50%;z-index:3;transform:translate(-50%,-50%) rotate(-40deg);font-size:10px;letter-spacing:2.2px;text-transform:uppercase;font-weight:700;white-space:nowrap;padding:2px 8px;border-radius:2px;pointer-events:none;color:var(--gold-light);border:1px solid rgba(143,203,234,0.7);background:rgba(14,58,87,0.82);box-shadow:0 2px 10px rgba(0,0,0,0.3)}
 .nav-links{display:flex}
 .nav-links a{color:rgba(255,255,255,0.75);font-size:13px;text-decoration:none;padding:0 1rem;display:flex;align-items:center;height:60px;border-bottom:2px solid transparent}
-.nav-links a:hover,.nav-links a.active{color:var(--white);border-bottom-color:var(--gold)}
+.nav-links a:hover.nav-links a.active{color:var(--white);border-bottom-color:var(--gold)}
 .hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:6px;width:36px;height:36px}
 .hamburger span{display:block;height:2px;background:var(--white);border-radius:2px;transition:all .25s}
 .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
@@ -32,7 +32,7 @@ nav{background:var(--dark);padding:0 2rem;display:flex;align-items:center;justif
 .mobile-menu.open{display:flex}
 .mobile-menu a{color:rgba(255,255,255,0.85);font-size:14px;text-decoration:none;padding:1rem 1.5rem;border-bottom:0.5px solid rgba(255,255,255,0.08);display:block}
 .hero{background:var(--navy);color:var(--white);padding:2.75rem 2rem 2.25rem;position:relative;overflow:hidden}
-.hero::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,transparent 1px 64px),repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 64px);mask-image:linear-gradient(180deg,rgba(0,0,0,.5),transparent 78%);pointer-events:none}
+.hero::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255.05) 0 1px,transparent 1px 64px),repeating-linear-gradient(0deg,rgba(255,255,255.05) 0 1px,transparent 1px 64px);mask-image:linear-gradient(180deg,rgba(0,0,0.5),transparent 78%);pointer-events:none}
 .hero-in{max-width:1080px;margin:0 auto;position:relative;z-index:1}
 .crumb{font-size:12px;color:rgba(255,255,255,0.55);margin-bottom:1.1rem}
 .crumb a{color:var(--gold-light);text-decoration:none}
@@ -64,8 +64,8 @@ footer span{color:var(--gold-light)}
 .codebox .code-head{display:flex;justify-content:space-between;align-items:center;background:var(--dark);color:rgba(255,255,255,0.8);padding:0.55rem 0.9rem;border-radius:0;gap:0.75rem;flex-wrap:wrap}
 .codebox .fname{font-family:Consolas,'Courier New',monospace;font-size:11.5px;letter-spacing:0;text-transform:none;color:var(--gold-light)}
 .code-actions{display:flex;gap:0.5rem;align-items:center}
-.code-actions button,.code-actions a{background:rgba(255,255,255,0.12);border:0.5px solid rgba(255,255,255,0.25);color:var(--white);font-family:inherit;font-size:11px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;padding:4px 11px;border-radius:4px;cursor:pointer;text-decoration:none;white-space:nowrap}
-.code-actions button:hover,.code-actions a:hover{background:var(--gold);border-color:var(--gold)}
+.code-actions button.code-actions a{background:rgba(255,255,255,0.12);border:0.5px solid rgba(255,255,255,0.25);color:var(--white);font-family:inherit;font-size:11px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;padding:4px 11px;border-radius:4px;cursor:pointer;text-decoration:none;white-space:nowrap}
+.code-actions button:hover.code-actions a:hover{background:var(--gold);border-color:var(--gold)}
 .code-actions button.done{background:var(--up);border-color:var(--up)}
 pre.code{background:#0B2C42;color:#D6EAF6;font-family:Consolas,'Courier New',monospace;font-size:11.5px;line-height:1.65;padding:1.1rem;overflow-x:auto;margin:0;max-height:460px;white-space:pre}
 pre.code.short{max-height:300px}
@@ -73,7 +73,7 @@ pre.code.short{max-height:300px}
 /* download row */
 .dl-row{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1.5rem}
 .dl{display:block;background:#F6FBFE;border:0.5px solid var(--border);border-radius:8px;padding:1rem 1.1rem;text-decoration:none;transition:all .18s}
-.dl:hover{border-color:var(--gold);box-shadow:0 4px 14px rgba(18,73,110,.1)}
+.dl:hover{border-color:var(--gold);box-shadow:0 4px 14px rgba(18,73,110.1)}
 .dl .ft{font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold);font-weight:700}
 .dl .fn{font-size:14px;font-weight:700;color:var(--text);margin:3px 0 2px}
 .dl .fd{font-size:11.5px;color:var(--text-muted);line-height:1.5}
@@ -118,7 +118,7 @@ pre.code .k{color:#8FCBEA}
 .tool-cta{display:inline-block;background:var(--gold);color:var(--white);text-decoration:none;padding:10px 20px;border-radius:5px;font-size:13px;font-weight:700}
 .tool-cta:hover{background:var(--gold-light)}
 @media(max-width:768px){
-  .tool-stats,.pipeline{grid-template-columns:1fr 1fr}
+  .tool-stats.pipeline{grid-template-columns:1fr 1fr}
   .tool-top{flex-direction:column}
 }
 
@@ -152,7 +152,7 @@ pre.code .k{color:#8FCBEA}
 .tool-cta{display:inline-block;background:var(--gold);color:var(--white);text-decoration:none;padding:10px 20px;border-radius:5px;font-size:13px;font-weight:700}
 .tool-cta:hover{background:var(--gold-light)}
 @media(max-width:768px){
-  .tool-stats,.pipeline{grid-template-columns:1fr 1fr}
+  .tool-stats.pipeline{grid-template-columns:1fr 1fr}
   .tool-top{flex-direction:column}
 }
 
@@ -198,8 +198,8 @@ pre.code .k{color:#8FCBEA}
         </ul>
 
         <h4 class="mini-h">Why it runs in the browser</h4>
-        <p class="tool-p">Conventional scrapers run on a server and have to be told how to authenticate — which means handling credentials, cookies and whatever bot challenge the site puts in front of them. Automated attempts against this particular source failed on exactly that: Cloudflare challenges, dropped connections, timeouts, and content that never rendered at all.</p>
-        <p class="tool-p">This tool sidesteps the problem instead of fighting it. It runs inside the browser tab you are already logged into, so it inherits your session and reads precisely the pages you could open yourself by clicking. It never sees a password, never authenticates on your behalf, and never touches anything you do not already have access to. It also means content built by scripts after page load — the tables that a server-side fetch returns empty — is fully visible, because the browser has already drawn it.</p>
+        <p class="tool-p">Conventional scrapers run on a server and have to be told how to authenticate, which means handling credentials, cookies and whatever bot challenge the site puts in front of them. Automated attempts against this particular source failed on exactly that: Cloudflare challenges, dropped connections, timeouts, and content that never rendered at all.</p>
+        <p class="tool-p">This tool sidesteps the problem instead of fighting it. It runs inside the browser tab you are already logged into, so it inherits your session and reads precisely the pages you could open yourself by clicking. It never sees a password, never authenticates on your behalf, and never touches anything you do not already have access to. It also means content built by scripts after page load, the tables that a server-side fetch returns empty, is fully visible, because the browser has already drawn it.</p>
 
         <h4 class="mini-h">The pipeline</h4>
         <div class="pipeline">
@@ -212,12 +212,12 @@ pre.code .k{color:#8FCBEA}
         <h4 class="mini-h">Running it, step by step</h4>
         <ol class="howto">
           <li><strong>List your targets</strong>Open <strong>Scrape-links.xlsx</strong> and put one URL per row in column A, starting at row 5. The remaining columns are for your own tracking and the script ignores them.</li>
-          <li><strong>Log in to the target site</strong>In the same browser, in a normal tab. This is the step that makes gated pages readable — everything downstream inherits this session.</li>
-          <li><strong>Open the console on that site</strong>Press <code class="inline">F12</code> on any page of the site you are scraping and switch to the Console tab. If the browser warns you about pasting, type <code class="inline">allow pasting</code> and press Enter. Paste on the same domain you are scraping — browsers block one origin from reading another's pages, so running it from elsewhere returns empty documents.</li>
+          <li><strong>Log in to the target site</strong>In the same browser, in a normal tab. This is the step that makes gated pages readable, everything downstream inherits this session.</li>
+          <li><strong>Open the console on that site</strong>Press <code class="inline">F12</code> on any page of the site you are scraping and switch to the Console tab. If the browser warns you about pasting, type <code class="inline">allow pasting</code> and press Enter. Paste on the same domain you are scraping, browsers block one origin from reading another's pages, so running it from elsewhere returns empty documents.</li>
           <li><strong>Paste your URLs into the script</strong>Copy column A from the spreadsheet and paste it between the backticks in <code class="inline">URL_LIST</code>. Excel puts one URL per line on the clipboard, which is the format the script expects.</li>
-          <li><strong>Paste the script and run</strong>Copy it with the button below, paste into the console, press Enter. Allow popups when asked — the reusable window it opens is where each page is loaded.</li>
+          <li><strong>Paste the script and run</strong>Copy it with the button below, paste into the console, press Enter. Allow popups when asked, the reusable window it opens is where each page is loaded.</li>
           <li><strong>Watch the log</strong>Each page reports <code class="inline">OK</code>, <code class="inline">THIN</code> or <code class="inline">FAIL</code>. Thin means the page rendered fewer tables than expected and is worth re-running. A checkpoint downloads every ten records.</li>
-          <li><strong>Consolidate</strong>Run <code class="inline">python ingest_batch_json.py details_batch.json --output dataset.xlsx</code> to merge every page-level file, de-duplicate by URL and flatten the whole thing into one wide sheet — a row per page, a column per field.</li>
+          <li><strong>Consolidate</strong>Run <code class="inline">python ingest_batch_json.py details_batch.json --output dataset.xlsx</code> to merge every page-level file, de-duplicate by URL and flatten the whole thing into one wide sheet, a row per page, a column per field.</li>
         </ol>
 
         <h4 class="mini-h">Settings you will actually change</h4>
@@ -479,7 +479,7 @@ https://www.example.com/page/2/
         <p class="scroll-note">Scroll inside the box to read the whole script, or use Copy and paste it straight into the console.</p>
 
         <h4 class="mini-h">The diagnostic</h4>
-        <p class="tool-p">Before writing an extractor for an unfamiliar site, it is worth knowing what is actually on the page — and in particular what is <em>drawn</em> rather than written. Some sources publish key documents as scanned images or render them into a canvas element, which no text or table parser will ever pick up. This script reports every link, image, CSS background image and hard-coded asset URL on a page, then checks each canvas to see whether it can be captured or is blocked by cross-origin tainting. That single answer decides whether an image-based page is reachable at all, or whether it has to be handled by hand.</p>
+        <p class="tool-p">Before writing an extractor for an unfamiliar site, it is worth knowing what is actually on the page, and in particular what is <em>drawn</em> rather than written. Some sources publish key documents as scanned images or render them into a canvas element, which no text or table parser will ever pick up. This script reports every link, image, CSS background image and hard-coded asset URL on a page, then checks each canvas to see whether it can be captured or is blocked by cross-origin tainting. That single answer decides whether an image-based page is reachable at all, or whether it has to be handled by hand.</p>
         <div class="codebox">
           <div class="code-head">
             <span class="fname">inspect_page_assets.js</span>
@@ -558,10 +558,10 @@ https://www.example.com/page/2/
         </div>
 
         <h4 class="mini-h">What comes out</h4>
-        <p class="tool-p">Every page becomes one object. Discrete label and value fields land as key–value rows; naturally multi-row tables — financials, subscription by category, the lot-size ladder, objects of the issue — keep their own shape, so nothing is flattened away before it is analysed. Pages that fail are recorded with their error rather than dropped, so a gap in the dataset is always visible.</p>
+        <p class="tool-p">Every page becomes one object. Discrete label and value fields land as key–value rows; naturally multi-row tables (financials, subscription by category, the lot-size ladder, objects of the issue) keep their own shape, so nothing is flattened away before it is analysed. Pages that fail are recorded with their error rather than dropped, so a gap in the dataset is always visible.</p>
         <div class="codebox">
           <div class="code-head">
-            <span class="fname">details_batch.json — one record, trimmed</span>
+            <span class="fname">details_batch.json, one record, trimmed</span>
             <span class="code-actions"><button onclick="copyCode(this,'code-sample')">Copy</button></span>
           </div>
           <pre class="code short" id="code-sample">{
@@ -682,7 +682,7 @@ https://www.example.com/page/2/
           <div><div class="lbl">Usable after cleaning</div><div class="val">45</div></div>
         </div>
 
-        <p class="tool-p" style="font-size:12.5px;color:var(--text-muted)">The tool only reads pages you are already able to open, and it does not bypass any access control. Check a site's terms before running it at volume, and keep the pace polite — the default gap between pages is there for a reason.</p>
+        <p class="tool-p" style="font-size:12.5px;color:var(--text-muted)">The tool only reads pages you are already able to open, and it does not bypass any access control. Check a site's terms before running it at volume, and keep the pace polite, the default gap between pages is there for a reason.</p>
 
         <a class="tool-cta" href="../IPO/">See what this data produced →</a>
       </div>
@@ -692,7 +692,7 @@ https://www.example.com/page/2/
 <a class="backlink" href="../">← Back to the investment desk</a>
 </div>
 
-<footer>&copy; 2026 <span>ArticlesByArticle Investment</span> — research, tools and IPO analytics. Educational content only, not investment advice. Markets carry risk of loss.</footer>
+<footer>&copy; 2026 <span>ArticlesByArticle Investment</span>. Research, tools and IPO analytics. Educational content only, not investment advice. Markets carry risk of loss.</footer>
 
 <script>
 
