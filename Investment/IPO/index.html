@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IPO Desk — Allotment Calculator &amp; Dataset | ArticlesByArticle Investment</title>
+<meta name="description" content="Work out your IPO allotment odds before you bid. Calculator built on SEBI allotment mechanics, a multi-account planner, and a dataset of 45 Indian IPOs with subscription and listing outcomes.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#12496E;--dark:#0E3A57;--logo:#8FCBEA;--navy-light:#1B5F8C;
+  --gold:#3E9BD1;--gold-light:#8FCBEA;--cream:#EEF6FC;
+  --text:#0F2230;--text-muted:#5C748A;--border:#CBE0F0;
+  --white:#FFFFFF;--up:#0F7A4A;--down:#C0392B;--warn:#B7791F;
+}
+body{font-family:Calibri,'Carlito','Segoe UI',sans-serif;color:var(--text);background:var(--cream);line-height:1.65}
+img{max-width:100%;height:auto;display:block}
+nav{background:var(--dark);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;height:60px}
+.logo-wrap{position:relative;display:inline-flex;align-items:center;height:60px;padding:0 14px 0 4px;text-decoration:none}
+.logo-mark{position:relative;z-index:1;font-size:22px;font-weight:700;color:var(--white);letter-spacing:-0.4px;line-height:1}
+.logo-mark span{color:var(--logo)}
+.logo-inv{position:absolute;left:76%;top:50%;z-index:3;transform:translate(-50%,-50%) rotate(-40deg);font-size:10px;letter-spacing:2.2px;text-transform:uppercase;font-weight:700;white-space:nowrap;padding:2px 8px;border-radius:2px;pointer-events:none;color:var(--gold-light);border:1px solid rgba(143,203,234,0.7);background:rgba(14,58,87,0.82);box-shadow:0 2px 10px rgba(0,0,0,0.3)}
+.nav-links{display:flex}
+.nav-links a{color:rgba(255,255,255,0.75);font-size:13px;text-decoration:none;padding:0 1rem;display:flex;align-items:center;height:60px;border-bottom:2px solid transparent}
+.nav-links a:hover,.nav-links a.active{color:var(--white);border-bottom-color:var(--gold)}
+/* hero */
+.hero{background:var(--navy);color:var(--white);padding:2.75rem 2rem 2.25rem;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,transparent 1px 64px),repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 64px);mask-image:linear-gradient(180deg,rgba(0,0,0,.5),transparent 78%);pointer-events:none}
+.hero-in{max-width:1080px;margin:0 auto;position:relative;z-index:1}
+.crumb{font-size:12px;color:rgba(255,255,255,0.55);margin-bottom:1.1rem}
+.crumb a{color:var(--gold-light);text-decoration:none}
+.eyebrow{font-size:10px;letter-spacing:2.6px;text-transform:uppercase;color:var(--gold-light);font-weight:700}
+.hero h1{font-size:38px;font-weight:700;letter-spacing:-0.8px;line-height:1.12;margin:0.6rem 0 0.6rem}
+.hero p.tag{font-size:15px;color:rgba(255,255,255,0.7);max-width:620px}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.16);border-radius:10px;overflow:hidden;margin-top:1.75rem}
+.stat-row div{background:rgba(255,255,255,0.08);padding:0.95rem 1rem}
+.stat-row .lbl{font-size:9.5px;letter-spacing:1.1px;text-transform:uppercase;color:rgba(255,255,255,0.6);font-weight:700}
+.stat-row .val{font-size:23px;font-weight:700;margin-top:3px;font-variant-numeric:tabular-nums;letter-spacing:-0.5px}
+
+/* ---- two divisions ---- */
+.division{max-width:1080px;margin:0 auto;padding:1.5rem 2rem 0}
+.divswitch{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.divswitch button{background:var(--white);border:0.5px solid var(--border);border-radius:10px;padding:1.1rem 1.25rem;text-align:left;cursor:pointer;font-family:inherit;transition:all .18s;position:relative;overflow:hidden}
+.divswitch button:hover{border-color:var(--gold);box-shadow:0 6px 18px rgba(18,73,110,.08)}
+.divswitch button .n{font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--gold)}
+.divswitch button .t{font-size:18px;font-weight:700;letter-spacing:-0.3px;color:var(--text);margin:3px 0 3px}
+.divswitch button .d{font-size:12.5px;color:var(--text-muted);line-height:1.55}
+.divswitch button.on{background:var(--navy);border-color:var(--navy)}
+.divswitch button.on .n{color:var(--gold-light)}
+.divswitch button.on .t{color:var(--white)}
+.divswitch button.on .d{color:rgba(255,255,255,0.7)}
+.divswitch button.on::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--gold)}
+@media(max-width:768px){.division{padding:1rem 1.15rem 0}.divswitch{grid-template-columns:1fr}}
+
+/* shell */
+.wrap{max-width:1080px;margin:0 auto;padding:2.5rem 2rem 1rem}
+h2.sec{font-size:24px;font-weight:700;letter-spacing:-0.4px;color:var(--navy);margin:3rem 0 0.5rem;padding-bottom:0.6rem;border-bottom:2px solid var(--navy);scroll-margin-top:75px}
+h2.sec:first-of-type{margin-top:0}
+p.seclead{font-size:14px;color:var(--text-muted);margin:-0.25rem 0 1.5rem}
+h3.sub{font-size:16px;font-weight:700;color:var(--navy-light);margin:2rem 0 0.75rem}
+p{margin-bottom:1.1rem;font-size:15px}
+/* tabs */
+.tabs{display:flex;gap:4px;background:var(--white);border:0.5px solid var(--border);border-radius:8px;padding:4px;margin-bottom:1.25rem;flex-wrap:wrap}
+.tabs button{background:none;border:none;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--text-muted);padding:8px 16px;border-radius:5px;cursor:pointer}
+.tabs button.on{background:var(--navy);color:var(--white)}
+/* calculator */
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;align-items:start}
+.panel{background:var(--white);border:0.5px solid var(--border);border-radius:10px;padding:1.5rem}
+.panel h3{font-size:15px;font-weight:700;margin-bottom:0.35rem}
+.panel .sub{font-size:12.5px;color:var(--text-muted);margin-bottom:1.25rem;line-height:1.6}
+.fld{margin-bottom:0.9rem}
+.fld label{display:block;font-size:11px;font-weight:700;letter-spacing:0.4px;color:var(--text-muted);text-transform:uppercase;margin-bottom:5px}
+.fld input,.fld select{width:100%;padding:9px 12px;border:0.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:14px;color:var(--text);background:var(--white);outline:none;font-variant-numeric:tabular-nums}
+.fld input:focus,.fld select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(62,155,209,0.15)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.result{background:var(--navy);border-radius:10px;padding:1.5rem;color:var(--white);margin-bottom:1rem}
+.result .eyebrow{margin-bottom:0.45rem}
+.big{font-size:46px;font-weight:700;line-height:1;letter-spacing:-1.5px;font-variant-numeric:tabular-nums}
+.result .note{font-size:13px;color:rgba(255,255,255,0.68);margin-top:0.5rem;line-height:1.6}
+.kv{display:flex;flex-direction:column}
+.kv div{display:flex;justify-content:space-between;gap:1rem;padding:9px 0;border-bottom:0.5px solid var(--border);font-size:13.5px}
+.kv div:last-child{border-bottom:none}
+.kv b{font-variant-numeric:tabular-nums}
+.verdict{background:#DCEDF9;border-left:3px solid var(--navy);border-radius:0 6px 6px 0;padding:0.9rem 1.1rem;font-size:13.5px;line-height:1.65;margin-top:1rem}
+.verdict strong{display:block;margin-bottom:3px}
+.disclaim{font-size:11.5px;color:var(--text-muted);line-height:1.6;margin-top:1.25rem;padding-top:1rem;border-top:0.5px solid var(--border)}
+/* tables */
+.tbl-wrap{background:var(--white);border:0.5px solid var(--border);border-radius:10px;overflow-x:auto;margin-bottom:0.75rem}
+table.data{width:100%;border-collapse:collapse;font-size:13px;min-width:820px}
+table.data th{background:var(--navy);color:var(--white);text-align:left;font-size:10.5px;letter-spacing:0.9px;text-transform:uppercase;font-weight:700;padding:10px 12px;white-space:nowrap;cursor:pointer;user-select:none}
+table.data th:hover{background:var(--navy-light)}
+table.data th.sorted::after{content:' ▾';color:var(--gold-light)}
+table.data th.sorted.asc::after{content:' ▴'}
+table.data td{padding:9px 12px;border-top:0.5px solid var(--border);font-variant-numeric:tabular-nums;white-space:nowrap}
+table.data td.name{white-space:normal;font-weight:600}
+table.data tr:hover td{background:#F6FBFE}
+.num{text-align:right}
+.up{color:var(--up);font-weight:700}.down{color:var(--down);font-weight:700}
+.pill{display:inline-block;font-size:10px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;padding:2px 8px;border-radius:3px;background:#E7EFF7;color:var(--navy-light)}
+.pill.sme{background:#FEF3E0;color:var(--warn)}
+.src{font-size:11px;color:var(--text-muted);line-height:1.55;font-style:italic;margin-bottom:1.75rem}
+/* cards */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;margin-bottom:1.5rem}
+.card{background:var(--white);border:0.5px solid var(--border);border-radius:10px;padding:1.35rem}
+.card h4{font-size:12.5px;letter-spacing:0.8px;text-transform:uppercase;font-weight:700;margin-bottom:0.85rem;padding-bottom:0.5rem;border-bottom:0.5px solid var(--border);color:var(--navy)}
+.card p{font-size:13.5px;margin-bottom:0.75rem}
+.card p:last-child{margin-bottom:0}
+.callout{background:var(--white);border-left:4px solid var(--gold);border-radius:0 8px 8px 0;padding:1.1rem 1.35rem;margin:1.5rem 0;font-size:14.5px}
+.callout strong.h{display:block;color:var(--navy);margin-bottom:0.35rem;font-size:15px}
+.callout.key{border-left-color:var(--navy);background:#DCEDF9}
+.callout.warn{border-left-color:var(--warn);background:#FEF8EE}
+ul.plain{list-style:none;margin-bottom:1.1rem}
+ul.plain li{position:relative;padding-left:1.1rem;margin-bottom:0.5rem;font-size:14.5px}
+ul.plain li::before{content:'▪';position:absolute;left:0;color:var(--gold);font-weight:700}
+.filters{display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+.filters input,.filters select{padding:8px 12px;border:0.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;background:var(--white);outline:none}
+.filters input{flex:1;min-width:180px}
+.count{font-size:12.5px;color:var(--text-muted)}
+footer{background:var(--dark);color:rgba(255,255,255,0.6);text-align:center;padding:2rem;font-size:12px;margin-top:3rem}
+footer span{color:var(--gold-light)}
+.backlink{display:inline-block;margin-top:2rem;font-size:13px;color:var(--navy-light);text-decoration:none;font-weight:700}
+@media(max-width:900px){.calc{grid-template-columns:1fr}.three{grid-template-columns:1fr}}
+@media(max-width:768px){
+  nav{padding:0 1rem}.nav-links{display:none}
+  .hero{padding:1.75rem 1.15rem}.hero h1{font-size:27px}
+  .stat-row{grid-template-columns:1fr 1fr}
+  .wrap{padding:1.5rem 1.15rem 1rem}
+  h2.sec{font-size:20px}
+  .two{grid-template-columns:1fr}
+  .g2{grid-template-columns:1fr}
+  .big{font-size:38px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo-wrap" href="../" aria-label="ArticlesByArticle Investment home">
+    <span class="logo-mark">Articles<span>ByArticle</span></span>
+    <span class="logo-inv">Investment</span>
+  </a>
+  <div class="nav-links">
+    <a href="../">Overview</a>
+    <a href="./" class="active">IPO Desk</a>
+    <a href="../Research/">Research Reports</a>
+    <a href="../Tools/">Tools</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-in">
+    <div class="crumb"><a href="../">Investment</a> · IPO Desk</div>
+    <div class="eyebrow">IPO Desk</div>
+    <h1>Work out your odds before you bid</h1>
+    <p class="tag">In an oversubscribed category, allotment is a computerised random draw. Nobody can tell you whether you will get shares. What can be worked out — and what this page does — is the probability, the capital it blocks, and whether an extra lot buys you anything at all. The desk splits in two: the mechanics and the evidence, and the calculator that runs on them.</p>
+    <div class="stat-row">
+      <div><div class="lbl">IPOs in the dataset</div><div class="val" id="s_count">—</div></div>
+      <div><div class="lbl">Median retail odds, Mainboard</div><div class="val" id="s_main">—</div></div>
+      <div><div class="lbl">Median retail odds, SME</div><div class="val" id="s_sme">—</div></div>
+      <div><div class="lbl">Median listing gain</div><div class="val" id="s_gain">—</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="division">
+  <div class="divswitch">
+    <button id="btn-info" class="on" onclick="showDivision('info')">
+      <div class="n">Division one</div>
+      <div class="t">IPO information</div>
+      <div class="d">How allotment actually works, the evidence behind it, and 45 real issues with subscription and listing outcomes.</div>
+    </button>
+    <button id="btn-calc" onclick="showDivision('calc')">
+      <div class="n">Division two</div>
+      <div class="t">Allotment calculator</div>
+      <div class="d">Your odds at a given subscription, what the application blocks, and where to place several accounts.</div>
+    </button>
+  </div>
+</div>
+
+<div class="wrap">
+
+<div id="div-info">
+<h2 class="sec" id="mechanics">How allotment actually works</h2>
+<p class="seclead">The mechanics below are verified against real Basis-of-Allotment documents, not inferred from commentary.</p>
+
+<div class="three">
+  <div class="card">
+    <h4>Retail</h4>
+    <p><strong>Undersubscribed (≤1x):</strong> everyone gets what they applied for, in full.</p>
+    <p><strong>More applications than maximum allottees:</strong> a computerised lottery, and every winner receives a maximum of one lot.</p>
+    <p><strong>Fewer applications than allottees but oversubscribed on shares:</strong> everyone gets at least one lot, surplus pro-rata.</p>
+  </div>
+  <div class="card">
+    <h4>sNII and bNII</h4>
+    <p><strong>sNII:</strong> applications of ₹2,00,000 to ₹10,00,000, drawing on one-third of the NII reservation.</p>
+    <p><strong>bNII:</strong> applications above ₹10,00,000, drawing on two-thirds.</p>
+    <p>The category is set by the value of your application, not by lot count, and the boundary shifts with every issue. Each winner receives the minimum NII bid, then any balance pro-rata.</p>
+  </div>
+  <div class="card">
+    <h4>QIB, anchor, employee</h4>
+    <p><strong>QIB:</strong> proportionate when oversubscribed, with mutual funds entitled to up to 5% of the QIB portion.</p>
+    <p><strong>Anchor:</strong> up to 60% of the QIB portion, allocated at the issuer's discretion.</p>
+    <p><strong>Employee:</strong> pro-rata, capped at ₹2,00,000 per employee, rising to ₹5,00,000 where the quota is undersubscribed.</p>
+  </div>
+</div>
+
+<div class="callout key">
+  <strong class="h">The one-lot cap bites immediately above 1x</strong>
+  Alpine Texworld was subscribed just 1.36 times in retail and allotted exactly one lot — 142 shares — to every successful bidder, whether they had applied for one lot or thirteen. There is no gentle middle band; the transition from full allotment to flat lottery is sharp. Caliber Mining is the cleanest proof: its published ratio of 62:1949 was identical for every bid size from one lot to forty-seven. Once retail is oversubscribed, extra lots on the same PAN buy nothing at all — the capital is blocked for zero additional chance.
+</div>
+
+<div class="callout warn">
+  <strong class="h">Be careful with bNII when it is oversubscribed</strong>
+  An oversubscribed bNII applicant blocks more than ₹10 lakh and receives roughly ₹2 lakh worth. Lohia Corp's bNII bidders applied for 2,380 shares and were allotted 490 — the sNII minimum. Only when a category is barely oversubscribed does allotment approach the full bid: Manipal's bNII at 1.07x allotted 1,606 shares of a 1,700-share bid.
+</div>
+
+<h3 class="sub">Where the calibration factor comes from</h3>
+<p>The textbook formula divides maximum allottees by the number of applications. Neither input is known before bidding closes, so it cannot be used to make a decision. The practical estimate is a calibration factor divided by the subscription multiple, and the factor below is derived from ten IPOs whose Basis of Allotment documents were read directly.</p>
+
+<div class="tbl-wrap">
+<table class="data">
+<thead><tr><th style="cursor:default">Company</th><th style="cursor:default">Segment</th><th class="num" style="cursor:default">Retail sub</th><th style="cursor:default">Published ratio</th><th class="num" style="cursor:default">Actual odds</th><th class="num" style="cursor:default">Raw 1/sub</th><th class="num" style="cursor:default">Factor</th></tr></thead>
+<tbody>
+<tr><td class="name">Manipal Health</td><td>Mainboard</td><td class="num">0.93x</td><td>1:1</td><td class="num">100%</td><td class="num">100%</td><td class="num">1.00</td></tr>
+<tr><td class="name">Juniper Green</td><td>Mainboard</td><td class="num">0.95x</td><td>1:1</td><td class="num">100%</td><td class="num">100%</td><td class="num">1.00</td></tr>
+<tr><td class="name">Alpine Texworld</td><td>Mainboard</td><td class="num">1.36x</td><td>283:321</td><td class="num">88.2%</td><td class="num">73.5%</td><td class="num">1.20</td></tr>
+<tr><td class="name">Lohia Corp</td><td>Mainboard</td><td class="num">2.70x</td><td>21:47</td><td class="num">44.7%</td><td class="num">37.0%</td><td class="num">1.21</td></tr>
+<tr><td class="name">SBI Funds Mgmt</td><td>Mainboard</td><td class="num">3.43x</td><td>179:409</td><td class="num">43.8%</td><td class="num">29.2%</td><td class="num">1.50</td></tr>
+<tr><td class="name">Indo-MIM</td><td>Mainboard</td><td class="num">6.56x</td><td>46:223</td><td class="num">20.6%</td><td class="num">15.2%</td><td class="num">1.35</td></tr>
+<tr><td class="name">Laser Power</td><td>Mainboard</td><td class="num">6.84x</td><td>42:251</td><td class="num">16.7%</td><td class="num">14.6%</td><td class="num">1.14</td></tr>
+<tr><td class="name">Xtranet Tech</td><td>Mainboard</td><td class="num">8.75x</td><td>56:411</td><td class="num">13.6%</td><td class="num">11.4%</td><td class="num">1.19</td></tr>
+<tr><td class="name">Caliber Mining</td><td>Mainboard</td><td class="num">41.82x</td><td>62:1949</td><td class="num">3.18%</td><td class="num">2.39%</td><td class="num">1.33</td></tr>
+<tr><td class="name">Millworks Tech</td><td>SME</td><td class="num">214.24x</td><td>110:25275</td><td class="num">0.435%</td><td class="num">0.467%</td><td class="num">0.93</td></tr>
+</tbody>
+</table>
+</div>
+<p class="src">Source: Basis of Allotment documents published by the respective registrars. Mainboard oversubscribed cases average a factor of 1.28, ranging from 1.14 to 1.50 — a small sample, so 1.21 should be read as a rough central value rather than a constant. Millworks confirms the SME reasoning: 100% of its applications were for exactly 800 shares, and its factor came out at 0.93, meaning no uplift at all.</p>
+
+<h2 class="sec" id="dataset">The dataset</h2>
+<p class="seclead">Every issue below was captured page by page with the scraping tool, parsed into JSON and consolidated. Subscription figures are final where the page published them.</p>
+
+<div class="filters">
+  <input type="text" id="f_search" placeholder="Search by company or registrar" oninput="renderTable()">
+  <select id="f_seg" onchange="renderTable()">
+    <option value="">All segments</option>
+    <option value="Mainboard">Mainboard</option>
+    <option value="SME">SME</option>
+  </select>
+  <select id="f_band" onchange="renderTable()">
+    <option value="">Any retail subscription</option>
+    <option value="u1">Undersubscribed (&lt;1x)</option>
+    <option value="1-3">1x to 3x</option>
+    <option value="3-10">3x to 10x</option>
+    <option value="10+">Above 10x</option>
+  </select>
+  <span class="count" id="f_count"></span>
+</div>
+
+<div class="tbl-wrap">
+  <table class="data" id="ipoTable">
+    <thead><tr>
+      <th onclick="sortBy('n')">Company</th>
+      <th onclick="sortBy('s')">Segment</th>
+      <th onclick="sortBy('cr')" class="num">Size (₹cr)</th>
+      <th>Price band</th>
+      <th onclick="sortBy('l')" class="num">Lot</th>
+      <th onclick="sortBy('r')" class="num">Retail</th>
+      <th onclick="sortBy('sn')" class="num">sNII</th>
+      <th onclick="sortBy('bn')" class="num">bNII</th>
+      <th onclick="sortBy('q')" class="num">QIB</th>
+      <th onclick="sortBy('odds')" class="num">Est. retail odds</th>
+      <th onclick="sortBy('g')" class="num">Listing gain</th>
+      <th>Listed</th>
+    </tr></thead>
+    <tbody id="ipoBody"></tbody>
+  </table>
+</div>
+<p class="src">Source: individual IPO detail pages captured from Chittorgarh between July and August 2026, parsed and consolidated by the scraping pipeline described on the <a href="../Tools/">tools page</a>. Estimated retail odds apply the calibration factor above to the final retail subscription figure and are capped at 100%. Listing gain is measured from the issue price to the last traded price on listing day. Blank cells mean the source page did not publish that figure.</p>
+
+<h2 class="sec" id="patterns">What the data shows</h2>
+
+<div class="two">
+  <div class="card">
+    <h4>Odds are far better on the mainboard</h4>
+    <p id="p_odds">—</p>
+    <p>The reason is structural rather than incidental. Mainboard lots cost around ₹15,000, so a large retail base can afford to participate and the reservation is spread across many more allottees. SME minimum tickets run to ₹1–2.6 lakh, which concentrates the applicant pool but also means almost everyone bids the minimum, so subscription in shares and competition per applicant become the same thing.</p>
+  </div>
+  <div class="card">
+    <h4>Heavily subscribed issues listed better</h4>
+    <p id="p_corr">—</p>
+    <p>This is a correlation on a small sample and it runs in the direction you would expect: demand that shows up in the subscription book also shows up on listing day. It is not a trading rule. The issues that were barely subscribed produced the flattest listings, and the one deeply negative outcome in the set came from an issue that was well subscribed.</p>
+  </div>
+</div>
+
+<div class="callout">
+  <strong class="h">The practical consequence</strong>
+  The IPOs that are easiest to get an allotment in are, on this evidence, the ones that tended to list flattest — and the ones that listed best were the ones where the odds were worst. That tension is the whole problem. It is also why spreading applications across separate PANs matters more than sizing any single one: you cannot improve your odds on a hot issue by bidding more, only by applying more times, legitimately, through genuinely separate applicants.
+</div>
+
+<h3 class="sub">Rules of thumb this supports</h3>
+<ul class="plain">
+  <li><strong>Apply in retail</strong> unless another category is visibly less subscribed on the day you decide.</li>
+  <li><strong>Prefer larger issues.</strong> Odds improve sharply with issue size, because the reservation grows faster than the applicant pool.</li>
+  <li><strong>Bid the minimum lot</strong> unless retail is tracking at or below roughly 1x late in the bidding window.</li>
+  <li><strong>Spread across accounts rather than stacking lots</strong> — the same money, several times the chance.</li>
+  <li><strong>Check subscription on day two or three.</strong> Day-one figures consistently understate final demand and will mislead you.</li>
+  <li><strong>Treat bNII with caution when oversubscribed</strong> — it blocks over ₹10 lakh to deliver about ₹2 lakh.</li>
+</ul>
+
+<h2 class="sec" id="limits">What this does not do</h2>
+<ul class="plain">
+  <li>It does not predict whether <em>you</em> will be allotted. In an oversubscribed category that is a computerised random draw and no model can tell you the outcome.</li>
+  <li>Odds are calibrated estimates from subscription multiples, not the exact ratios in each issue's Basis of Allotment.</li>
+  <li>The calibration rests on ten IPOs, nine of them mainboard and one SME. The SME factor is a single observation.</li>
+  <li>Spillover between categories is ignored. It materially affected at least one issue in the calibration set, where an undersubscribed sNII category released 876,114 shares into retail and made the realised odds better than the raw subscription figure implied.</li>
+  <li>Nothing here is investment advice, and none of it accounts for whether the company is worth owning after listing.</li>
+</ul>
+
+</div>
+
+<div id="div-calc" style="display:none">
+<h2 class="sec" id="calculator">Allotment calculator</h2>
+<p class="seclead">Enter what the exchange is showing during the bidding window. Nothing is sent anywhere — it all runs in your browser.</p>
+
+<div class="tabs" id="tabs">
+  <button class="on" onclick="switchTool('odds',this)">Allotment odds</button>
+  <button onclick="switchTool('accounts',this)">Multi-account planner</button>
+</div>
+
+<div id="tool-odds">
+  <div class="calc">
+    <div class="panel">
+      <h3>Chance of allotment</h3>
+      <p class="sub">The estimate uses a calibration factor derived from ten published Basis-of-Allotment documents: 1.21 for Mainboard, 1.00 for SME. Mainboard lots are cheap enough that many investors bid several, so there are fewer applicants than the share-based subscription figure implies — which makes the real odds better than 1/subscription. SME tickets are large, almost everyone bids the minimum, and the two measures converge.</p>
+      <div class="fld">
+        <label>Segment</label>
+        <select id="a_seg" onchange="calcOdds()"><option value="1.21">Mainboard</option><option value="1.00">SME</option></select>
+      </div>
+      <div class="g2">
+        <div class="fld"><label>Category</label>
+          <select id="a_cat" onchange="calcOdds()"><option>Retail</option><option>sNII</option><option>bNII</option></select></div>
+        <div class="fld"><label>Subscription (x)</label>
+          <input type="number" id="a_sub" value="22" min="0" step="0.01" oninput="calcOdds()"></div>
+      </div>
+      <div class="g2">
+        <div class="fld"><label>Lot size (shares)</label>
+          <input type="number" id="a_lot" value="100" min="1" oninput="calcOdds()"></div>
+        <div class="fld"><label>Issue price (₹)</label>
+          <input type="number" id="a_price" value="150" min="1" oninput="calcOdds()"></div>
+      </div>
+      <div class="g2">
+        <div class="fld"><label>Separate PANs applying</label>
+          <input type="number" id="a_pan" value="3" min="1" max="50" oninput="calcOdds()"></div>
+        <div class="fld"><label>Expected listing gain (%)</label>
+          <input type="number" id="a_gmp" value="12" step="0.5" oninput="calcOdds()"></div>
+      </div>
+      <div class="disclaim">Odds are calibrated estimates, not the exact ratio published in an IPO's Basis of Allotment. Allotment in an oversubscribed category is a random draw. This is analysis, not investment advice.</div>
+    </div>
+    <div>
+      <div class="result">
+        <div class="eyebrow">Chance of allotment per application</div>
+        <div class="big" id="r_odds">—</div>
+        <div class="note" id="r_note"></div>
+      </div>
+      <div class="panel">
+        <div class="kv">
+          <div><span>Capital blocked per application</span><b id="r_block">—</b></div>
+          <div><span>Total capital across all PANs</span><b id="r_total">—</b></div>
+          <div><span>Chance at least one PAN is allotted</span><b id="r_any">—</b></div>
+          <div><span>Expected lots allotted</span><b id="r_lots">—</b></div>
+          <div><span>Expected profit at your listing gain</span><b id="r_profit">—</b></div>
+          <div><span>Expected return on capital blocked</span><b id="r_roc">—</b></div>
+        </div>
+        <div class="verdict" id="r_verdict"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="tool-accounts" style="display:none">
+  <div class="calc">
+    <div class="panel">
+      <h3>Multi-account planner</h3>
+      <p class="sub">Accounts are the scarce resource, not rupees. Each PAN is one lottery entry and can sit in only one category per IPO, so the question is where to place them. This ranks every split.</p>
+      <div class="g2">
+        <div class="fld"><label>Accounts available</label><input type="number" id="m_acc" value="3" min="1" max="20" oninput="calcMix()"></div>
+        <div class="fld"><label>Capital available (₹)</label><input type="number" id="m_cap" value="540000" min="0" step="10000" oninput="calcMix()"></div>
+      </div>
+      <div class="g2">
+        <div class="fld"><label>Retail subscription (x)</label><input type="number" id="m_ret" value="22" step="0.01" oninput="calcMix()"></div>
+        <div class="fld"><label>sNII subscription (x)</label><input type="number" id="m_sni" value="21" step="0.01" oninput="calcMix()"></div>
+      </div>
+      <div class="g2">
+        <div class="fld"><label>Retail lot cost (₹)</label><input type="number" id="m_rcost" value="15000" step="500" oninput="calcMix()"></div>
+        <div class="fld"><label>sNII minimum bid (₹)</label><input type="number" id="m_scost" value="210000" step="5000" oninput="calcMix()"></div>
+      </div>
+      <div class="disclaim">Every application needs a distinct PAN, its own demat account and that person's own funds. Two applications on one PAN are rejected outright. This models genuinely separate applicants, such as family members each applying for themselves.</div>
+    </div>
+    <div>
+      <div class="result">
+        <div class="eyebrow">Best mix for your accounts</div>
+        <div class="big" id="x_best" style="font-size:32px">—</div>
+        <div class="note" id="x_note"></div>
+      </div>
+      <div class="panel">
+        <h3 style="margin-bottom:0.75rem">Every split, ranked</h3>
+        <div class="tbl-wrap" style="border:none;margin:0">
+          <table class="data" style="min-width:0">
+            <thead><tr><th style="cursor:default">Split</th><th class="num" style="cursor:default">Capital</th><th class="num" style="cursor:default">Expected lots</th><th class="num" style="cursor:default">Any allotment</th></tr></thead>
+            <tbody id="x_rows"></tbody>
+          </table>
+        </div>
+        <div class="verdict" id="x_verdict"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="callout key" style="margin-top:2rem">
+  <strong class="h">Reading the result</strong>
+  The percentage is the chance that one application is allotted, not the chance that you personally get shares in this particular draw. Run it again with the number of separate PANs you actually have — that figure moves the outcome far more than anything else on the form, because above roughly 1x subscription a bigger bid on one PAN changes nothing at all.
+</div>
+
+<p style="margin-top:1.5rem"><a href="#mechanics" onclick="showDivision('info');setTimeout(function(){document.getElementById('mechanics').scrollIntoView()},50)" style="color:var(--navy-light);font-weight:700;text-decoration:none;font-size:13.5px">Where these numbers come from →</a></p>
+</div>
+
+<a class="backlink" href="../#/investor">← Back to the investment desk</a>
+
+</div>
+
+<footer>&copy; 2026 <span>ArticlesByArticle Investment</span> — research, tools and IPO analytics. Educational content only, not investment advice. Markets carry risk of loss.</footer>
+
+<script>
+const IPOS=[
+  {n:"SBI Funds Management",s:"Mainboard",b:"₹545 to ₹574",l:26.0,p:574.0,cr:9795.0,d:"14 to 16 Jul, 2026",ld:"Tue, Jul 21, 2026",r:3.76,q:140.11,sn:15.51,bn:26.01,ni:22.51,t:41.73,g:6.3,go:6.3,reg:"Kfin Technologies Ltd."},
+  {n:"Manipal Health Enterprises",s:"Mainboard",b:"₹560 to ₹590",l:25.0,p:590.0,cr:9275.0,d:"29 to 31 Jul, 2026",ld:"Wed, Aug 5, 2026",r:0.98,q:8.54,sn:0.94,bn:1.13,ni:1.06,t:5.12,g:13.0,go:11.0,reg:"Kfin Technologies Ltd."},
+  {n:"Indo-MIM",s:"Mainboard",b:"₹461 to ₹485",l:30.0,p:485.0,cr:3812.0,d:"23 to 27 Jul, 2026",ld:"Thu, Jul 30, 2026",r:6.69,q:204.47,sn:36.55,bn:57.69,ni:50.65,t:72.37,g:52.9,go:44.9,reg:"MUFG Intime India Pvt.Ltd."},
+  {n:"Juniper Green Energy",s:"Mainboard",b:"₹214 to ₹225",l:66.0,p:225.0,cr:1800.0,d:"30 Jul to 3 Aug, 2026",ld:"Thu, Aug 6, 2026",r:0.98,q:26.22,sn:1.6,bn:2.07,ni:1.92,t:8.38,g:15.4,go:7.6,reg:"Kfin Technologies Ltd."},
+  {n:"Lohia Corp",s:"Mainboard",b:"₹404 to ₹425",l:35.0,p:425.0,cr:1101.0,d:"23 to 27 Jul, 2026",ld:"Thu, Jul 30, 2026",r:2.78,q:9.11,sn:5.77,bn:7.35,ni:6.82,t:7.26,g:16.4,go:8.2,reg:"MUFG Intime India Pvt.Ltd."},
+  {n:"Turtlemint Fintech Solutions",s:"Mainboard",b:"₹144 to ₹152",l:98.0,p:152.0,cr:883.0,d:"19 to 23 Jun, 2026",ld:"Mon, Jun 29, 2026",r:null,q:null,sn:null,bn:null,ni:null,t:null,g:-10.9,go:-10.4,reg:"Kfin Technologies Ltd."},
+  {n:"Laser Power & Infra",s:"Mainboard",b:"₹203 to ₹214",l:70.0,p:214.0,cr:742.0,d:"9 to 13 Jul, 2026",ld:"Thu, Jul 16, 2026",r:6.95,q:97.25,sn:36.43,bn:50.32,ni:45.69,t:41.05,g:22.8,go:25.7,reg:"MUFG Intime India Pvt.Ltd."},
+  {n:"Kusumgar",s:"Mainboard",b:"₹398 to ₹419",l:35.0,p:419.0,cr:650.0,d:"8 to 10 Jul, 2026",ld:"Wed, Jul 15, 2026",r:null,q:null,sn:null,bn:null,ni:null,t:null,g:44.3,go:37.0,reg:"Bigshare Services Pvt.Ltd."},
+  {n:"Waterways Leisure Tourism",s:"Mainboard",b:"₹769 to ₹808",l:18.0,p:808.0,cr:585.0,d:"23 to 25 Jun, 2026",ld:"Wed, Jul 1, 2026",r:null,q:null,sn:null,bn:null,ni:null,t:null,g:-17.4,go:-14.6,reg:"MUFG Intime India Pvt.Ltd."},
+  {n:"Caliber Mining & Logistics",s:"Mainboard",b:"₹402 to ₹424",l:35.0,p:424.0,cr:450.0,d:"17 to 21 Jul, 2026",ld:"Fri, Jul 24, 2026",r:43.4,q:253.88,sn:227.37,bn:309.31,ni:281.99,t:154.66,g:24.6,go:18.9,reg:"Kfin Technologies Ltd."},
+  {n:"Knack Packaging",s:"Mainboard",b:"₹161 to ₹170",l:88.0,p:170.0,cr:439.0,d:"1 to 3 Jul, 2026",ld:"Wed, Jul 8, 2026",r:null,q:null,sn:null,bn:null,ni:null,t:null,g:7.5,go:9.4,reg:"MUFG Intime India Pvt.Ltd."},
+  {n:"Ardee Industries",s:"Mainboard",b:"₹50 to ₹53",l:281.0,p:53.0,cr:426.0,d:"5 to 7 Aug, 2026",ld:"Wed, Aug 12, 2026",r:47.77,q:202.26,sn:220.51,bn:289.87,ni:266.75,t:138.83,g:26.7,go:38.9,reg:"Kfin Technologies Ltd."},
+  {n:"MV Electrosystems",s:"Mainboard",b:"₹400 to ₹425",l:34.0,p:425.0,cr:290.0,d:"30 Jul to 3 Aug, 2026",ld:"Thu, Aug 6, 2026",r:218.25,q:96.13,sn:354.63,bn:419.67,ni:397.99,t:200.66,g:46.5,go:22.1,reg:"Kfin Technologies Ltd."},
+  {n:"Anawil Wire & Engineering",s:"SME",b:"₹257 to ₹270",l:400.0,p:270.0,cr:178.0,d:"3 to 5 Aug, 2026",ld:"Mon, Aug 10, 2026",r:104.22,q:164.56,sn:122.29,bn:288.9,ni:233.36,t:149.13,g:28.2,go:22.1,reg:"Bigshare Services Pvt.Ltd."},
+  {n:"Aastha Spintex",s:"Mainboard",b:"₹125 to ₹136",l:110.0,p:136.0,cr:170.0,d:"29 Jun to 1 Jul, 2026",ld:"Mon, Jul 6, 2026",r:null,q:null,sn:null,bn:null,ni:null,t:null,g:0.3,go:-4.4,reg:"Bigshare Services Pvt.Ltd."},
+  {n:"Xtranet Technologies",s:"Mainboard",b:"₹120 to ₹127",l:110.0,p:127.0,cr:167.0,d:"23 to 27 Jul, 2026",ld:"Thu, Jul 30, 2026",r:8.98,q:7.13,sn:26.53,bn:26.72,ni:26.65,t:12.24,g:-1.7,go:2.4,reg:"Kfin Technologies Ltd."},
+  {n:"Advit Jewels",s:"Mainboard",b:"₹130 to ₹138",l:100.0,p:138.0,cr:165.0,d:"23 to 25 Jun, 2026",ld:"Wed, Jul 1, 2026",r:null,q:null,sn:null,bn:null,ni:null,t:null,g:29.1,go:35.5,reg:"Bigshare Services Pvt.Ltd."},
+  {n:"Poojaa Precision Engg.",s:"SME",b:"₹285 to ₹301",l:400.0,p:301.0,cr:160.0,d:"28 to 30 Jul, 2026",ld:"Tue, Aug 4, 2026",r:247.58,q:206.46,sn:278.5,bn:555.45,ni:463.43,t:278.83,g:64.0,go:56.1,reg:"MUFG Intime India Pvt.Ltd."},
+  {n:"Millworks Technologies",s:"SME",b:"₹315 to ₹331",l:400.0,p:331.0,cr:160.0,d:"14 to 16 Jul, 2026",ld:"Tue, Jul 21, 2026",r:216.6,q:194.05,sn:201.44,bn:289.84,ni:260.37,t:219.54,g:99.5,go:90.0,reg:"Purva Sharegistry (India) Pvt.Ltd."},
+  {n:"CSM Technologies",s:"Mainboard",b:"₹107 to ₹113",l:132.0,p:113.0,cr:146.0,d:"24 to 29 Jun, 2026",ld:"Thu, Jul 2, 2026",r:null,q:null,sn:null,bn:null,ni:null,t:null,g:-5.0,go:0.0,reg:"Kfin Technologies Ltd."},
+  {n:"Alpine Texworld",s:"Mainboard",b:"₹100 to ₹105",l:142.0,p:105.0,cr:126.0,d:"14 to 16 Jul, 2026",ld:"Tue, Jul 21, 2026",r:1.54,q:1.09,sn:1.48,bn:0.9,ni:1.09,t:1.4,g:-5.0,go:0.0,reg:"Kfin Technologies Ltd."},
+  {n:"Sotefin Bharat",s:"SME",b:"₹178 to ₹187",l:600.0,p:187.0,cr:90.0,d:"16 to 20 Jul, 2026",ld:"Thu, Jul 23, 2026",r:3.78,q:2.82,sn:3.59,bn:7.28,ni:6.05,t:3.99,g:15.1,go:9.6,reg:"Bigshare Services Pvt.Ltd."},
+  {n:"Silverstorm Parks & Resorts",s:"SME",b:"₹123 to ₹133",l:1000.0,p:133.0,cr:82.0,d:"24 to 28 Jul, 2026",ld:"Fri, Jul 31, 2026",r:1.41,q:1.81,sn:2.12,bn:3.72,ni:3.19,t:1.91,g:-4.8,go:-0.1,reg:"MUFG Intime India Pvt.Ltd."},
+  {n:"H.R.Hygiene Products",s:"SME",b:"₹83 to ₹88",l:1600.0,p:88.0,cr:54.0,d:"29 to 31 Jul, 2026",ld:"Wed, Aug 5, 2026",r:6.74,q:2.81,sn:10.71,bn:12.39,ni:11.83,t:6.65,g:-0.0,go:2.3,reg:"Purva Sharegistry (India) Pvt.Ltd."},
+  {n:"Metalic Technoforge",s:"SME",b:"₹72 to ₹77",l:1600.0,p:77.0,cr:50.0,d:"21 to 23 Jul, 2026",ld:"Tue, Jul 28, 2026",r:7.0,q:4.58,sn:9.6,bn:20.82,ni:17.07,t:8.47,g:7.9,go:13.0,reg:"Bigshare Services Pvt.Ltd."},
+  {n:"IC Electricals Co.",s:"SME",b:"₹94 to ₹99",l:1200.0,p:99.0,cr:48.0,d:"3 to 7 Jul, 2026",ld:"Fri, Jul 10, 2026",r:null,q:null,sn:null,bn:null,ni:null,t:null,g:76.1,go:67.7,reg:"Skyline Financial Services Pvt.Ltd."},
+  {n:"Adon Agro Commodities",s:"SME",b:"₹66 to ₹70",l:2000.0,p:70.0,cr:44.0,d:"29 Jun to 1 Jul, 2026",ld:"Mon, Jul 6, 2026",r:null,q:null,sn:null,bn:null,ni:null,t:null,g:17.4,go:11.8,reg:"Kfin Technologies Ltd."},
+  {n:"G.V.Electricals",s:"SME",b:"₹123 to ₹130",l:1000.0,p:130.0,cr:42.0,d:"31 Jul to 7 Aug, 2026",ld:"Wed, Aug 12, 2026",r:168.69,q:91.55,sn:187.69,bn:315.34,ni:272.79,t:169.26,g:27.6,go:21.5,reg:"Mudra RTA Ventures Private Limited"},
+  {n:"Devson Catalyst",s:"SME",b:"₹112 to ₹118",l:1200.0,p:118.0,cr:42.0,d:"9 to 13 Jul, 2026",ld:"Thu, Jul 16, 2026",r:244.08,q:168.56,sn:211.19,bn:286.5,ni:261.22,t:220.35,g:74.5,go:66.2,reg:"MUFG Intime India Pvt.Ltd."},
+  {n:"Kratikal Tech",s:"SME",b:"₹128 to ₹135",l:1000.0,p:135.0,cr:40.0,d:"30 Jun to 2 Jul, 2026",ld:"Tue, Jul 7, 2026",r:null,q:null,sn:null,bn:null,ni:null,t:null,g:35.1,go:42.2,reg:"Kfin Technologies Ltd."},
+  {n:"Fusion Klassroom Edutech",s:"SME",b:"₹151 to ₹159",l:800.0,p:159.0,cr:39.0,d:"31 Jul to 4 Aug, 2026",ld:"Fri, Aug 7, 2026",r:1.8,q:1.0,sn:1.48,bn:1.47,ni:1.47,t:1.5,g:4.9,go:6.9,reg:"Maashitla Securities Pvt.Ltd."},
+  {n:"Dhaval Packaging",s:"SME",b:"₹92 to ₹97",l:1200.0,p:97.0,cr:36.0,d:"30 Jul to 3 Aug, 2026",ld:"Thu, Aug 6, 2026",r:40.36,q:56.38,sn:48.36,bn:88.89,ni:75.35,t:49.99,g:15.1,go:13.4,reg:"Kfin Technologies Ltd."},
+  {n:"Vinit Mobile",s:"SME",b:"₹150 to ₹158",l:800.0,p:158.0,cr:34.0,d:"30 Jun to 2 Jul, 2026",ld:"Tue, Jul 7, 2026",r:null,q:null,sn:null,bn:null,ni:null,t:null,g:-6.8,go:-1.9,reg:"Bigshare Services Pvt.Ltd."},
+  {n:"LAPL Automotive",s:"SME",b:"₹88 to ₹94",l:1200.0,p:94.0,cr:32.0,d:"6 to 10 Aug, 2026",ld:"Thu, Aug 13, 2026",r:387.78,q:200.23,sn:345.67,bn:477.05,ni:433.26,t:344.31,g:36.5,go:43.6,reg:"Maashitla Securities Pvt.Ltd."},
+  {n:"Crazy Snacks",s:"SME",b:"₹39 to ₹42",l:3000.0,p:42.0,cr:31.0,d:"25 to 30 Jun, 2026",ld:"Fri, Jul 3, 2026",r:null,q:null,sn:null,bn:null,ni:null,t:null,g:8.7,go:4.8,reg:"Kfin Technologies Ltd."},
+  {n:"Shreedhar Spinners",s:"SME",b:"₹51 to ₹53",l:2000.0,p:53.0,cr:31.0,d:"23 to 25 Jun, 2026",ld:"Wed, Jul 1, 2026",r:null,q:null,sn:null,bn:null,ni:null,t:null,g:7.7,go:2.6,reg:"MUFG Intime India Pvt.Ltd."},
+  {n:"Riyaasat Lifestyle",s:"SME",b:"₹100 to ₹106",l:1200.0,p:106.0,cr:30.0,d:"18 to 25 Jun, 2026",ld:"Wed, Jul 1, 2026",r:null,q:null,sn:null,bn:null,ni:null,t:null,g:-24.0,go:-20.0,reg:"Skyline Financial Services Pvt.Ltd."},
+  {n:"Propshop Events & Exhibitions",s:"SME",b:"₹65 to ₹69",l:2000.0,p:69.0,cr:29.0,d:"27 to 29 Jul, 2026",ld:"Mon, Aug 3, 2026",r:1.77,q:1.37,sn:1.75,bn:1.19,ni:1.38,t:1.53,g:-17.2,go:-20.0,reg:"MUFG Intime India Pvt.Ltd."},
+  {n:"Oneindig Technologies",s:"SME",b:"₹91 to ₹96",l:1200.0,p:96.0,cr:28.0,d:"30 Jul to 3 Aug, 2026",ld:"Thu, Aug 6, 2026",r:1.84,q:1.05,sn:2.43,bn:2.39,ni:2.4,t:1.73,g:31.2,go:25.0,reg:"Maashitla Securities Pvt.Ltd."},
+  {n:"Atharva Polyplast",s:"SME",b:"₹55 to ₹60",l:2000.0,p:60.0,cr:27.0,d:"30 Jun to 2 Jul, 2026",ld:"Tue, Jul 7, 2026",r:null,q:null,sn:null,bn:null,ni:null,t:null,g:20.8,go:15.0,reg:"MUFG Intime India Pvt.Ltd."},
+  {n:"Sampark India Logistics",s:"SME",b:"₹80 to ₹84",l:1600.0,p:84.0,cr:27.0,d:"30 Jun to 2 Jul, 2026",ld:"Tue, Jul 7, 2026",r:null,q:null,sn:null,bn:null,ni:null,t:null,g:11.3,go:6.0,reg:"Maashitla Securities Pvt.Ltd."},
+  {n:"Happy Steels",s:"SME",b:"₹62 to ₹66",l:2000.0,p:66.0,cr:25.0,d:"9 to 13 Jul, 2026",ld:"Thu, Jul 16, 2026",r:73.25,q:59.01,sn:83.26,bn:128.77,ni:113.6,t:77.81,g:3.8,go:3.0,reg:"Bigshare Services Pvt.Ltd."},
+  {n:"Aegeus Technologies",s:"SME",b:"₹100 to ₹105",l:1200.0,p:105.0,cr:24.0,d:"4 to 6 Aug, 2026",ld:"Tue, Aug 11, 2026",r:25.59,q:23.88,sn:33.69,bn:55.23,ni:48.05,t:29.91,g:24.5,go:18.6,reg:"Skyline Financial Services Pvt.Ltd."},
+  {n:"Seemax Resources",s:"SME",b:"₹134 to ₹141",l:1000.0,p:141.0,cr:20.0,d:"30 Jun to 2 Jul, 2026",ld:"Tue, Jul 7, 2026",r:null,q:null,sn:null,bn:null,ni:null,t:null,g:-24.0,go:-20.0,reg:"Cameo Corporate Services Ltd."},
+  {n:"Shree Balaji (Mala) Textiles",s:"SME",b:"₹66 to ₹70",l:2000.0,p:70.0,cr:19.0,d:"22 to 24 Jul, 2026",ld:"Wed, Jul 29, 2026",r:228.24,q:113.55,sn:193.75,bn:277.33,ni:249.47,t:200.34,g:80.5,go:90.0,reg:"Kfin Technologies Ltd."}
+];
+
+/* ---------- helpers ---------- */
+const inr=n=>'₹'+Math.round(n).toLocaleString('en-IN');
+const xf=n=>(n===null||n===undefined)?'':n.toFixed(2)+'x';
+const factor=s=>s==='Mainboard'?1.21:1.00;
+function oddsOf(o){
+  if(o.r===null||o.r===undefined)return null;
+  return o.r<=1?100:Math.min(100,factor(o.s)/o.r*100);
+}
+function median(a){
+  const v=a.filter(x=>x!==null&&x!==undefined).sort((p,q)=>p-q);
+  if(!v.length)return null;
+  const m=Math.floor(v.length/2);
+  return v.length%2?v[m]:(v[m-1]+v[m])/2;
+}
+
+/* ---------- headline stats ---------- */
+(function(){
+  const main=IPOS.filter(o=>o.s==='Mainboard'&&o.r!==null).map(oddsOf);
+  const sme=IPOS.filter(o=>o.s==='SME'&&o.r!==null).map(oddsOf);
+  const gains=IPOS.map(o=>o.g).filter(g=>g!==null);
+  document.getElementById('s_count').textContent=IPOS.length;
+  document.getElementById('s_main').textContent=median(main).toFixed(1)+'%';
+  document.getElementById('s_sme').textContent=median(sme).toFixed(1)+'%';
+  const mg=median(gains);
+  document.getElementById('s_gain').textContent=(mg>0?'+':'')+mg.toFixed(1)+'%';
+
+  document.getElementById('p_odds').innerHTML=
+    'Across the '+IPOS.filter(o=>o.r!==null).length+' issues that published final subscription, the median estimated retail chance was <strong>'+
+    median(main).toFixed(1)+'%</strong> on the mainboard against <strong>'+median(sme).toFixed(1)+
+    '%</strong> on SME — roughly '+(median(main)/median(sme)).toFixed(0)+
+    ' times better. Median retail subscription was '+median(IPOS.filter(o=>o.s==='Mainboard').map(o=>o.r)).toFixed(1)+
+    'x and '+median(IPOS.filter(o=>o.s==='SME').map(o=>o.r)).toFixed(1)+'x respectively.';
+
+  const pair=IPOS.filter(o=>o.r!==null&&o.g!==null);
+  const n=pair.length, mx=pair.reduce((a,o)=>a+o.r,0)/n, my=pair.reduce((a,o)=>a+o.g,0)/n;
+  const cov=pair.reduce((a,o)=>a+(o.r-mx)*(o.g-my),0);
+  const sx=Math.sqrt(pair.reduce((a,o)=>a+(o.r-mx)**2,0)), sy=Math.sqrt(pair.reduce((a,o)=>a+(o.g-my)**2,0));
+  const corr=cov/(sx*sy);
+  const band=x=>x<1?'<1x':(x<3?'1-3x':(x<10?'3-10x':'>10x'));
+  const groups={};
+  pair.forEach(o=>{(groups[band(o.r)]=groups[band(o.r)]||[]).push(o.g)});
+  const parts=['1-3x','3-10x','>10x'].filter(k=>groups[k]).map(k=>k+' → '+(median(groups[k])>0?'+':'')+median(groups[k]).toFixed(1)+'%');
+  document.getElementById('p_corr').innerHTML=
+    'The correlation between retail subscription and listing gain across the '+n+
+    ' issues with both figures is <strong>'+corr.toFixed(2)+'</strong>. Grouping by how heavily retail was subscribed, the median listing gain runs '+
+    parts.join(', ')+'.';
+})();
+
+/* ---------- dataset table ---------- */
+let sortKey='cr', sortAsc=false;
+function sortBy(k){
+  if(sortKey===k)sortAsc=!sortAsc; else{sortKey=k;sortAsc=false;}
+  renderTable();
+}
+function renderTable(){
+  const q=(document.getElementById('f_search').value||'').toLowerCase();
+  const seg=document.getElementById('f_seg').value;
+  const bd=document.getElementById('f_band').value;
+  let list=IPOS.slice();
+  if(q)list=list.filter(o=>o.n.toLowerCase().includes(q)||(o.reg||'').toLowerCase().includes(q));
+  if(seg)list=list.filter(o=>o.s===seg);
+  if(bd)list=list.filter(o=>{
+    if(o.r===null)return false;
+    if(bd==='u1')return o.r<1;
+    if(bd==='1-3')return o.r>=1&&o.r<3;
+    if(bd==='3-10')return o.r>=3&&o.r<10;
+    return o.r>=10;
+  });
+  const key=sortKey;
+  list.sort((a,b)=>{
+    let av=key==='odds'?oddsOf(a):a[key], bv=key==='odds'?oddsOf(b):b[key];
+    if(av===null||av===undefined)return 1;
+    if(bv===null||bv===undefined)return -1;
+    if(typeof av==='string')return sortAsc?av.localeCompare(bv):bv.localeCompare(av);
+    return sortAsc?av-bv:bv-av;
+  });
+  document.getElementById('f_count').textContent=list.length+' of '+IPOS.length+' issues';
+  document.getElementById('ipoBody').innerHTML=list.length?list.map(o=>{
+    const od=oddsOf(o);
+    return '<tr>'+
+      '<td class="name">'+o.n+'</td>'+
+      '<td><span class="pill '+(o.s==='SME'?'sme':'')+'">'+o.s+'</span></td>'+
+      '<td class="num">'+(o.cr!==null?o.cr.toLocaleString('en-IN'):'')+'</td>'+
+      '<td>'+(o.b||'')+'</td>'+
+      '<td class="num">'+(o.l!==null?o.l.toLocaleString('en-IN'):'')+'</td>'+
+      '<td class="num">'+xf(o.r)+'</td><td class="num">'+xf(o.sn)+'</td>'+
+      '<td class="num">'+xf(o.bn)+'</td><td class="num">'+xf(o.q)+'</td>'+
+      '<td class="num">'+(od!==null?od.toFixed(1)+'%':'')+'</td>'+
+      '<td class="num">'+(o.g!==null?'<span class="'+(o.g>=0?'up':'down')+'">'+(o.g>0?'+':'')+o.g.toFixed(1)+'%</span>':'')+'</td>'+
+      '<td>'+(o.ld||'')+'</td></tr>';
+  }).join(''):'<tr><td colspan="12" style="text-align:center;padding:2rem;color:var(--text-muted)">No issues match these filters. Widen the search or clear the segment.</td></tr>';
+  document.querySelectorAll('#ipoTable th').forEach(th=>th.classList.remove('sorted','asc'));
+}
+renderTable();
+
+/* ---------- calculator ---------- */
+function switchTool(id,el){
+  document.querySelectorAll('#tabs button').forEach(b=>b.classList.remove('on'));
+  if(el)el.classList.add('on');
+  document.getElementById('tool-odds').style.display=id==='odds'?'block':'none';
+  document.getElementById('tool-accounts').style.display=id==='accounts'?'block':'none';
+}
+
+function calcOdds(){
+  const seg=parseFloat(document.getElementById('a_seg').value);
+  const cat=document.getElementById('a_cat').value;
+  const sub=parseFloat(document.getElementById('a_sub').value)||0;
+  const lot=parseFloat(document.getElementById('a_lot').value)||0;
+  const price=parseFloat(document.getElementById('a_price').value)||0;
+  const pans=Math.max(1,parseInt(document.getElementById('a_pan').value)||1);
+  const gain=(parseFloat(document.getElementById('a_gmp').value)||0)/100;
+
+  const lotCost=lot*price;
+  const f=(cat==='Retail')?seg:1.0;
+  const p=sub<=1?1:Math.min(1,f/sub);
+
+  let blocked=lotCost, allotVal=lotCost;
+  if(cat!=='Retail'){
+    const minVal=(cat==='sNII')?200000:1000000;
+    const lots=lotCost>0?Math.ceil(minVal/lotCost):0;
+    blocked=lots*lotCost;
+    const sLots=lotCost>0?Math.ceil(200000/lotCost):0;
+    allotVal=(sub<=1)?blocked:sLots*lotCost;
+  }
+  const anyP=1-Math.pow(1-p,pans);
+  const expLots=pans*p*(lotCost>0?allotVal/lotCost:0);
+  const profit=pans*p*allotVal*gain;
+  const total=blocked*pans;
+
+  document.getElementById('r_odds').textContent=(p*100).toFixed(1)+'%';
+  document.getElementById('r_note').textContent=
+    sub<=1?'At '+sub+'x the category is not oversubscribed — every bid is allotted in full.'
+          :'Estimated from '+sub+'x subscription using a '+f.toFixed(2)+' calibration factor. Roughly 1 in '+Math.round(1/p)+' applications.';
+  document.getElementById('r_block').textContent=blocked>0?inr(blocked):'—';
+  document.getElementById('r_total').textContent=total>0?inr(total):'—';
+  document.getElementById('r_any').textContent=(anyP*100).toFixed(1)+'%';
+  document.getElementById('r_lots').textContent=expLots.toFixed(2);
+  document.getElementById('r_profit').textContent=inr(profit);
+  document.getElementById('r_roc').textContent=total>0?(profit/total*100).toFixed(2)+'%':'—';
+
+  let v;
+  if(sub<=1) v='<strong>Bid more than the minimum</strong>The category is undersubscribed, so extra lots are actually allotted. This is the one situation where bidding above the minimum pays.';
+  else if(sub<1.5) v='<strong>Watch the final day</strong>At '+sub+'x it is close enough to 1x that extra lots may still get partial allotment. Decide on day three, not day one.';
+  else if(cat==='Retail') v='<strong>Minimum lot only</strong>Above roughly 1.5x, retail allotment is a flat lottery capped at one lot — a thirteen-lot bid and a one-lot bid have the same chance. Put the spare capital behind another PAN instead.';
+  else v='<strong>Check what you actually receive</strong>An oversubscribed '+cat+' bid blocks '+inr(blocked)+' but is allotted about '+inr(allotVal)+' worth. The blocked capital earns nothing while it waits.';
+  document.getElementById('r_verdict').innerHTML=v;
+}
+
+function calcMix(){
+  const acc=Math.max(1,parseInt(document.getElementById('m_acc').value)||1);
+  const cap=parseFloat(document.getElementById('m_cap').value)||0;
+  const rs=parseFloat(document.getElementById('m_ret').value)||1;
+  const ss=parseFloat(document.getElementById('m_sni').value)||1;
+  const rc=parseFloat(document.getElementById('m_rcost').value)||1;
+  const sc=parseFloat(document.getElementById('m_scost').value)||1;
+
+  const pR=rs<=1?1:Math.min(1,1.21/rs);
+  const pS=ss<=1?1:Math.min(1,1.00/ss);
+  const sLots=sc/rc;
+
+  const opts=[];
+  for(let k=0;k<=acc;k++){
+    if(k*sc>cap)break;
+    const left=cap-k*sc;
+    const r=Math.min(acc-k,Math.floor(left/rc));
+    opts.push({k,r,capital:k*sc+r*rc,lots:k*pS*sLots+r*pR,any:1-Math.pow(1-pS,k)*Math.pow(1-pR,r)});
+  }
+  opts.sort((a,b)=>b.lots-a.lots);
+  const best=opts[0];
+  const label=o=>((o.k?o.k+' sNII':'')+(o.k&&o.r?' + ':'')+(o.r?o.r+' Retail':''))||'nothing affordable';
+
+  document.getElementById('x_best').textContent=best?label(best):'—';
+  document.getElementById('x_note').textContent=best
+    ?inr(best.capital)+' deployed · '+best.lots.toFixed(2)+' lots expected · '+(best.any*100).toFixed(1)+'% chance of at least one allotment.'
+    :'Increase capital or lower the minimum bid to see options.';
+  document.getElementById('x_rows').innerHTML=opts.map((o,i)=>
+    '<tr'+(i===0?' style="background:#DCEDF9"':'')+'><td>'+label(o)+'</td><td class="num">'+inr(o.capital)+
+    '</td><td class="num">'+o.lots.toFixed(3)+'</td><td class="num">'+(o.any*100).toFixed(1)+'%</td></tr>').join('');
+  document.getElementById('x_verdict').innerHTML=
+    '<strong>Accounts are the scarce resource, not rupees</strong>Adding accounts buys certainty, not a better rate — expected profit and capital both scale together, so the return on capital stays flat while the chance of getting something rises.';
+}
+
+calcOdds();calcMix();
+
+/* ---------- divisions ---------- */
+function showDivision(which){
+  const info=which==='info';
+  document.getElementById('div-info').style.display=info?'block':'none';
+  document.getElementById('div-calc').style.display=info?'none':'block';
+  document.getElementById('btn-info').classList.toggle('on',info);
+  document.getElementById('btn-calc').classList.toggle('on',!info);
+  if(location.hash!=='#'+which)history.replaceState(null,'','#'+which);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+if(location.hash==='#calc'||location.hash==='#calculator')showDivision('calc');
+</script>
+</body>
+</html>

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArticlesByArticle Investment — Research, Tools &amp; IPOs</title>
+<meta name="description" content="Equity research, IPO allotment tools and an IPO desk for Indian public markets.">
+<style>
+
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#12496E;--dark:#0E3A57;--logo:#8FCBEA;--navy-light:#1B5F8C;
+  --gold:#3E9BD1;--gold-light:#8FCBEA;--cream:#EEF6FC;
+  --text:#0F2230;--text-muted:#5C748A;--border:#CBE0F0;
+  --white:#FFFFFF;--up:#0F7A4A;--down:#C0392B;
+}
+body{font-family:Calibri,'Carlito','Segoe UI',sans-serif;color:var(--text);background:var(--cream);scroll-behavior:smooth}
+.page{display:none}.page.active{display:block}
+nav{background:var(--dark);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;height:60px}
+.nav-links{display:flex;gap:0;height:60px}
+.nav-links a{color:rgba(255,255,255,0.75);font-size:13px;font-weight:400;text-decoration:none;padding:0 1rem;display:flex;align-items:center;border-bottom:2px solid transparent;transition:all .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--white);border-bottom-color:var(--gold)}
+.nav-right{display:flex;align-items:center;gap:1rem}
+.nav-btn{background:var(--gold);color:var(--white);border:none;padding:7px 16px;border-radius:4px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;text-decoration:none}
+
+
+/* ---- code blocks with copy ---- */
+.codebox{margin-bottom:1.25rem;border-radius:8px;overflow:hidden;border:0.5px solid var(--border)}
+.codebox .code-head{display:flex;justify-content:space-between;align-items:center;background:var(--dark);color:rgba(255,255,255,0.8);padding:0.55rem 0.9rem;border-radius:0;gap:0.75rem;flex-wrap:wrap}
+.codebox .fname{font-family:Consolas,'Courier New',monospace;font-size:11.5px;letter-spacing:0;text-transform:none;color:var(--gold-light)}
+.code-actions{display:flex;gap:0.5rem;align-items:center}
+.code-actions button,.code-actions a{background:rgba(255,255,255,0.12);border:0.5px solid rgba(255,255,255,0.25);color:var(--white);font-family:inherit;font-size:11px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;padding:4px 11px;border-radius:4px;cursor:pointer;text-decoration:none;white-space:nowrap}
+.code-actions button:hover,.code-actions a:hover{background:var(--gold);border-color:var(--gold)}
+.code-actions button.done{background:var(--up);border-color:var(--up)}
+pre.code{background:#0B2C42;color:#D6EAF6;font-family:Consolas,'Courier New',monospace;font-size:11.5px;line-height:1.65;padding:1.1rem;overflow-x:auto;margin:0;max-height:460px;white-space:pre}
+pre.code.short{max-height:300px}
+.scroll-note{font-size:11px;color:var(--text-muted);font-style:italic;margin:-0.75rem 0 1.25rem}
+/* download row */
+.dl-row{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1.5rem}
+.dl{display:block;background:#F6FBFE;border:0.5px solid var(--border);border-radius:8px;padding:1rem 1.1rem;text-decoration:none;transition:all .18s}
+.dl:hover{border-color:var(--gold);box-shadow:0 4px 14px rgba(18,73,110,.1)}
+.dl .ft{font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold);font-weight:700}
+.dl .fn{font-size:14px;font-weight:700;color:var(--text);margin:3px 0 2px}
+.dl .fd{font-size:11.5px;color:var(--text-muted);line-height:1.5}
+/* numbered how-to */
+ol.howto{counter-reset:h;list-style:none;margin-bottom:1.25rem}
+ol.howto li{counter-increment:h;position:relative;padding-left:2.6rem;margin-bottom:1rem;font-size:14px;line-height:1.65}
+ol.howto li::before{content:counter(h);position:absolute;left:0;top:0;width:26px;height:26px;border-radius:50%;background:var(--navy);color:var(--white);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.howto li strong{display:block;font-size:14.5px;margin-bottom:2px}
+code.inline{background:#DCEDF9;color:var(--navy);font-family:Consolas,'Courier New',monospace;font-size:12.5px;padding:1px 6px;border-radius:3px}
+.settings-tbl{width:100%;border-collapse:collapse;font-size:13px;background:var(--white);margin-bottom:1.25rem}
+.settings-tbl th{background:var(--navy);color:var(--white);text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:9px 12px}
+.settings-tbl td{padding:8px 12px;border-top:0.5px solid var(--border);vertical-align:top}
+.settings-tbl td:first-child{font-family:Consolas,'Courier New',monospace;font-size:12px;color:var(--navy);white-space:nowrap;font-weight:700}
+@media(max-width:768px){.dl-row{grid-template-columns:1fr}}
+
+/* ---- tools showcase ---- */
+.tool-block{background:var(--white);border:0.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1.5rem}
+.tool-top{padding:1.5rem 1.6rem;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;gap:1.25rem;flex-wrap:wrap}
+.tool-top h3{font-size:19px;font-weight:700;letter-spacing:-0.3px;margin-bottom:4px}
+.tool-top .kicker{font-size:10px;letter-spacing:2.2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:6px}
+.tool-top p{font-size:13.5px;color:var(--text-muted);max-width:620px;margin:0}
+.tool-badge{font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;padding:4px 10px;border-radius:3px;background:#E3F5EB;color:var(--up);white-space:nowrap}
+.tool-badge.build{background:#DCEDF9;color:var(--navy-light)}
+.tool-body{padding:1.5rem 1.6rem}
+.tool-body ul{list-style:none;margin-bottom:1.25rem}
+.mini-h{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--navy);font-weight:700;margin:1.75rem 0 0.7rem;padding-bottom:0.4rem;border-bottom:0.5px solid var(--border)}
+.tool-p{font-size:14px;line-height:1.7;margin-bottom:1rem}
+.tool-body li{position:relative;padding-left:1.15rem;margin-bottom:0.7rem;font-size:14px;line-height:1.65}
+.tool-body li::before{content:'▪';position:absolute;left:0;color:var(--gold);font-weight:700}
+.tool-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem}
+.tool-stats div{background:#F6FBFE;padding:0.85rem 0.9rem}
+.tool-stats .lbl{font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);font-weight:700}
+.tool-stats .val{font-size:19px;font-weight:700;margin-top:2px;font-variant-numeric:tabular-nums;color:var(--navy)}
+.pipeline{display:grid;grid-template-columns:repeat(4,1fr);gap:0.6rem;margin-bottom:1.25rem}
+.step{background:#F6FBFE;border:0.5px solid var(--border);border-radius:8px;padding:0.9rem}
+.step .n{font-size:10px;font-weight:700;color:var(--gold);letter-spacing:1px}
+.step .t{font-size:13px;font-weight:700;margin:3px 0 3px}
+.step p{font-size:11.5px;color:var(--text-muted);line-height:1.55;margin:0}
+.code-head{display:flex;justify-content:space-between;align-items:center;background:var(--dark);color:rgba(255,255,255,0.75);font-size:11px;letter-spacing:0.8px;text-transform:uppercase;font-weight:700;padding:0.6rem 1rem;border-radius:8px 8px 0 0}
+pre.code{background:#0B2C42;color:#D6EAF6;font-family:Consolas,'Courier New',monospace;font-size:12px;line-height:1.6;padding:1.1rem;border-radius:0 0 8px 8px;overflow-x:auto;margin-bottom:1rem}
+pre.code .k{color:#8FCBEA}
+.tool-cta{display:inline-block;background:var(--gold);color:var(--white);text-decoration:none;padding:10px 20px;border-radius:5px;font-size:13px;font-weight:700}
+.tool-cta:hover{background:var(--gold-light)}
+@media(max-width:768px){
+  .tool-stats,.pipeline{grid-template-columns:1fr 1fr}
+  .tool-top{flex-direction:column}
+}
+
+/* ---- masthead logo: the Investment mark raked 40deg ABOVE the wordmark ---- */
+.logo-wrap{position:relative;display:inline-flex;align-items:center;height:60px;padding:0 14px 0 4px;text-decoration:none;cursor:pointer;flex-shrink:0}
+.logo-mark{position:relative;z-index:1;font-size:22px;font-weight:700;color:var(--white);letter-spacing:-0.4px;line-height:1}
+.logo-mark span{color:var(--logo)}
+.logo-inv{position:absolute;left:76%;top:50%;z-index:3;transform:translate(-50%,-50%) rotate(-40deg);
+  font-size:10px;letter-spacing:2.2px;text-transform:uppercase;font-weight:700;white-space:nowrap;
+  padding:2px 8px;border-radius:2px;pointer-events:none;
+  color:var(--gold-light);border:1px solid rgba(143,203,234,0.7);background:rgba(14,58,87,0.82);
+  box-shadow:0 2px 10px rgba(0,0,0,0.3)}
+.hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:6px;width:36px;height:36px}
+.hamburger span{display:block;height:2px;background:var(--white);border-radius:2px;transition:all .25s}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobile-menu{display:none;position:fixed;top:60px;left:0;right:0;background:var(--dark);z-index:99;flex-direction:column;border-top:0.5px solid rgba(255,255,255,0.1);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+.mobile-menu.open{display:flex}
+.mobile-menu a{color:rgba(255,255,255,0.85);font-size:14px;text-decoration:none;padding:1rem 1.5rem;border-bottom:0.5px solid rgba(255,255,255,0.08);display:block}
+.mobile-menu a:hover{background:rgba(255,255,255,0.07)}
+.mob-join-btn{background:var(--gold)!important;color:var(--white)!important;text-align:center;font-weight:600!important;margin:1rem 1.5rem;border-radius:4px;padding:.75rem 1rem!important;border-bottom:none!important}
+footer{background:var(--dark);color:rgba(255,255,255,0.6);text-align:center;padding:2rem;font-size:12px;margin-top:3rem;border-top:0.5px solid rgba(255,255,255,0.1)}
+footer span{color:var(--gold-light)}
+/* article/report body type */
+.art-back{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--text-muted);cursor:pointer;margin-bottom:1.5rem;border:none;background:none;font-family:inherit;padding:0}
+.art-back:hover{color:var(--navy)}
+.art-body{font-size:15px;line-height:1.85;color:#20313D}
+.art-body p{margin-bottom:1.4rem}
+.art-body h2{font-size:22px;font-weight:700;margin:2.25rem 0 1rem;padding-top:1rem;border-top:0.5px solid var(--border);letter-spacing:-0.3px}
+.art-body ul{margin:0 0 1.4rem 1.5rem}
+.art-body ul li{margin-bottom:0.5rem;line-height:1.75}
+.art-body .highlight-box{background:var(--white);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:1rem 1.25rem;margin:1.5rem 0;font-size:14px;color:var(--text-muted)}
+.art-body .highlight-box strong{color:var(--text);display:block;margin-bottom:4px}
+/* desk band */
+.desk-band{background:var(--white);border-top:0.5px solid var(--border);padding:3rem 2rem;margin-top:1rem}
+.desk-band-in{max-width:1100px;margin:0 auto}
+.desk-pair{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.desk-tile{border-radius:12px;padding:1.75rem;position:relative;overflow:hidden;text-decoration:none;display:block;transition:transform .2s,box-shadow .2s}
+.desk-tile:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(18,73,110,0.16)}
+.desk-tile .eyebrow{margin-bottom:0.75rem}
+.desk-tile h3{font-size:22px;font-weight:700;letter-spacing:-0.4px;margin-bottom:0.5rem}
+.desk-tile p{font-size:13px;line-height:1.7;margin-bottom:1.25rem}
+.desk-tile .go{font-size:12px;font-weight:700;letter-spacing:0.4px}
+.desk-tile.here{background:var(--cream);border:0.5px solid var(--border);color:var(--text);cursor:default}
+.desk-tile.here:hover{transform:none;box-shadow:none}
+.desk-tile.here .eyebrow{color:var(--gold)}
+.desk-tile.here p,.desk-tile.here .go{color:var(--text-muted)}
+.desk-tile.away{background:#B27C7C;color:var(--white)}
+.desk-tile.away .eyebrow{color:#F0D9A8}
+.desk-tile.away p{color:rgba(255,255,255,0.72)}
+.desk-tile.away .go{color:#F0D9A8}
+.desk-tile.away::after{content:'Taxes';position:absolute;right:-6px;bottom:6px;transform:rotate(-40deg);font-size:34px;font-weight:700;letter-spacing:-1px;color:rgba(255,255,255,0.08);pointer-events:none}
+@media(max-width:768px){
+  nav{padding:0 1rem}.nav-links{display:none}.hamburger{display:flex}.mob-hide{display:none}
+  .desk-band{padding:2rem 1rem}.desk-pair{grid-template-columns:1fr}
+  .logo-inv{font-size:9px;letter-spacing:1.6px}
+  footer{padding:1.5rem 1rem;font-size:11px}
+}
+
+/* ================= INVESTMENT SIDE — light-blue theme ================= */
+body.inv{
+  --navy:#12496E;      /* hero / header slabs */
+  --dark:#0E3A57;      /* nav bar */
+  --logo:#8FCBEA;      /* second word of the logo */
+  --navy-light:#1B5F8C;
+  --gold:#3E9BD1;      /* accent (was gold) */
+  --gold-light:#8FCBEA;
+  --cream:#EEF6FC;     /* page background */
+  --border:#CBE0F0;
+  --text:#0F2230;
+  --text-muted:#5C748A;
+}
+body.inv{--up:#0F7A4A;--down:#C0392B;--warn:#B7791F}
+/* investor hero */
+.inv-hero{background:var(--navy);padding:3.5rem 2rem 3rem;position:relative;overflow:hidden}
+.inv-hero::after{content:'';position:absolute;inset:0;background:
+  repeating-linear-gradient(90deg,rgba(255,255,255,0.05) 0 1px,transparent 1px 64px),
+  repeating-linear-gradient(0deg,rgba(255,255,255,0.05) 0 1px,transparent 1px 64px);
+  mask-image:linear-gradient(180deg,rgba(0,0,0,.55),transparent 75%);pointer-events:none}
+.inv-hero-in{max-width:1100px;margin:0 auto;position:relative;z-index:1;display:grid;grid-template-columns:1.25fr 1fr;gap:2.5rem;align-items:center}
+.eyebrow{font-size:10px;letter-spacing:2.6px;text-transform:uppercase;color:var(--gold-light);font-weight:600;margin-bottom:1rem}
+.inv-hero h1{font-size:42px;color:var(--white);font-weight:700;line-height:1.12;letter-spacing:-0.8px;margin-bottom:0.9rem}
+.inv-hero h1 em{font-style:normal;color:var(--gold-light)}
+.inv-hero p{color:rgba(255,255,255,0.7);font-size:15px;line-height:1.7;max-width:460px;margin-bottom:1.75rem}
+.inv-cta{display:flex;gap:0.75rem;flex-wrap:wrap}
+.btn-solid{background:var(--gold);color:var(--white);border:none;padding:11px 22px;border-radius:4px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.btn-ghost{background:none;color:var(--white);border:0.5px solid rgba(255,255,255,0.35);padding:11px 22px;border-radius:4px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.btn-solid:hover{background:var(--gold-light)}.btn-ghost:hover{background:rgba(255,255,255,0.1)}
+/* the signature: live odds ticker card in the hero */
+.odds-card{background:rgba(255,255,255,0.06);border:0.5px solid rgba(255,255,255,0.18);border-radius:10px;padding:1.25rem 1.35rem;backdrop-filter:blur(3px)}
+.odds-card h4{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.55);font-weight:600;margin-bottom:0.9rem}
+.odds-row{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:0.5px solid rgba(255,255,255,0.12)}
+.odds-row:last-of-type{border-bottom:none}
+.odds-row span:first-child{font-size:13px;color:rgba(255,255,255,0.8)}
+.odds-val{font-size:19px;font-weight:700;color:var(--white);font-variant-numeric:tabular-nums}
+.odds-note{font-size:11px;color:rgba(255,255,255,0.45);margin-top:0.75rem;line-height:1.5}
+/* section shell */
+.inv-sec{max-width:1100px;margin:0 auto;padding:3rem 2rem}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1.5rem;border-bottom:0.5px solid var(--border);padding-bottom:0.9rem}
+.sec-head h2{font-size:26px;font-weight:700;letter-spacing:-0.4px}
+.sec-head p{font-size:13px;color:var(--text-muted);margin-top:3px}
+.sec-head a{font-size:12px;color:var(--navy-light);font-weight:600;cursor:pointer;white-space:nowrap}
+/* desk cards */
+.desk-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem}
+.desk-card{background:var(--white);border:0.5px solid var(--border);border-radius:10px;padding:1.5rem;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.desk-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gold)}
+.desk-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(18,73,110,0.12)}
+.desk-card h3{font-size:16px;font-weight:700;margin-bottom:6px}
+.desk-card p{font-size:12.5px;color:var(--text-muted);line-height:1.65;margin-bottom:1rem}
+.desk-card .go{font-size:11.5px;font-weight:700;color:var(--navy-light);letter-spacing:0.3px}
+.desk-icon{width:40px;height:40px;border-radius:8px;background:#DCEDF9;color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;margin-bottom:0.9rem}
+/* data tables */
+.tbl-wrap{background:var(--white);border:0.5px solid var(--border);border-radius:10px;overflow-x:auto}
+table.data{width:100%;border-collapse:collapse;font-size:13px;min-width:720px}
+table.data th{background:#DCEDF9;color:var(--navy);text-align:left;font-size:10.5px;letter-spacing:1px;text-transform:uppercase;font-weight:700;padding:11px 14px;white-space:nowrap}
+table.data td{padding:11px 14px;border-top:0.5px solid var(--border);vertical-align:middle;font-variant-numeric:tabular-nums}
+table.data tr:hover td{background:#F6FBFE}
+.num{text-align:right}
+.pill{display:inline-block;font-size:10px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;padding:2px 9px;border-radius:3px}
+.pill.open{background:#E3F5EB;color:var(--up)}
+.pill.upcoming{background:#FEF3E0;color:#B7791F}
+.pill.listed{background:#E7EFF7;color:var(--navy-light)}
+.pill.closed{background:#F0F2F4;color:#66788A}
+.up{color:var(--up);font-weight:700}.down{color:var(--down);font-weight:700}
+.tabs{display:flex;gap:4px;background:var(--white);border:0.5px solid var(--border);border-radius:8px;padding:4px;margin-bottom:1.25rem;flex-wrap:wrap}
+.tabs button{background:none;border:none;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--text-muted);padding:8px 16px;border-radius:5px;cursor:pointer}
+.tabs button.on{background:var(--navy);color:var(--white)}
+/* calculator */
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;align-items:start}
+.calc-panel{background:var(--white);border:0.5px solid var(--border);border-radius:10px;padding:1.5rem}
+.calc-panel h3{font-size:15px;font-weight:700;margin-bottom:0.35rem}
+.calc-panel .sub{font-size:12px;color:var(--text-muted);margin-bottom:1.25rem;line-height:1.6}
+.calc-fld{margin-bottom:0.9rem}
+.calc-fld label{display:block;font-size:11px;font-weight:600;letter-spacing:0.4px;color:var(--text-muted);text-transform:uppercase;margin-bottom:5px}
+.calc-fld input,.calc-fld select{width:100%;padding:9px 12px;border:0.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:14px;color:var(--text);background:var(--white);outline:none;font-variant-numeric:tabular-nums}
+.calc-fld input:focus,.calc-fld select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(62,155,209,0.15)}
+.calc-2{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.result-hero{background:var(--navy);border-radius:10px;padding:1.5rem;color:var(--white);margin-bottom:1rem}
+.result-hero .eyebrow{margin-bottom:0.5rem}
+.result-big{font-size:46px;font-weight:700;line-height:1;letter-spacing:-1.5px;font-variant-numeric:tabular-nums}
+.result-sub{font-size:13px;color:rgba(255,255,255,0.65);margin-top:0.5rem;line-height:1.6}
+.kv-list{display:flex;flex-direction:column;gap:0}
+.kv-list div{display:flex;justify-content:space-between;gap:1rem;padding:9px 0;border-bottom:0.5px solid var(--border);font-size:13px}
+.kv-list div:last-child{border-bottom:none}
+.kv-list b{font-variant-numeric:tabular-nums}
+.verdict{background:#DCEDF9;border-left:3px solid var(--navy);border-radius:0 6px 6px 0;padding:0.9rem 1.1rem;font-size:13px;line-height:1.65;margin-top:1rem}
+.verdict strong{display:block;margin-bottom:3px}
+.disclaim{font-size:11.5px;color:var(--text-muted);line-height:1.6;margin-top:1.25rem;padding-top:1rem;border-top:0.5px solid var(--border)}
+/* research report cards */
+.rep-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem}
+.rep-card{background:var(--white);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:all .2s;display:flex;flex-direction:column}
+.rep-card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(18,73,110,0.1)}
+.rep-top{padding:1.1rem 1.25rem;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;gap:0.75rem}
+.rep-tick{font-size:11px;letter-spacing:1.2px;font-weight:700;color:var(--text-muted)}
+.rep-card h3{font-size:15px;font-weight:700;line-height:1.35;margin-top:4px}
+.rating{font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;padding:3px 9px;border-radius:3px;white-space:nowrap}
+.rating.buy{background:#E3F5EB;color:var(--up)}
+.rating.hold{background:#FEF3E0;color:#B7791F}
+.rating.sell{background:#FBE9E7;color:var(--down)}
+.rep-body{padding:1.1rem 1.25rem;flex:1}
+.rep-body p{font-size:12.5px;color:var(--text-muted);line-height:1.65}
+.rep-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:0.5px solid var(--border)}
+.rep-nums div{padding:0.8rem 0.5rem;text-align:center;border-right:0.5px solid var(--border)}
+.rep-nums div:last-child{border-right:none}
+.rep-nums .lbl{font-size:9.5px;letter-spacing:0.8px;text-transform:uppercase;color:var(--text-muted);font-weight:600}
+.rep-nums .val{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
+.rep-foot{padding:0.75rem 1.25rem;background:#F6FBFE;font-size:11px;color:var(--text-muted);display:flex;justify-content:space-between}
+/* report detail */
+.rep-detail{max-width:860px;margin:0 auto;padding:2.5rem 2rem}
+.rep-hd{background:var(--navy);border-radius:12px;padding:1.75rem;color:var(--white);margin-bottom:1.5rem}
+.rep-hd h1{font-size:30px;font-weight:700;letter-spacing:-0.6px;line-height:1.2;margin:0.4rem 0 0.75rem}
+.rep-hd .meta{font-size:12px;color:rgba(255,255,255,0.6)}
+.rep-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.15);border-radius:8px;overflow:hidden;margin-top:1.25rem}
+.rep-strip div{background:rgba(255,255,255,0.07);padding:0.85rem}
+.rep-strip .lbl{font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.55);font-weight:600}
+.rep-strip .val{font-size:18px;font-weight:700;margin-top:3px;font-variant-numeric:tabular-nums}
+.empty{background:var(--white);border:1px dashed var(--border);border-radius:10px;padding:2.5rem;text-align:center;color:var(--text-muted);font-size:13px}
+.empty strong{display:block;color:var(--text);font-size:15px;margin-bottom:5px}
+@media(max-width:900px){
+  .inv-hero-in{grid-template-columns:1fr;gap:1.75rem}
+  .desk-grid,.rep-grid{grid-template-columns:1fr 1fr}
+  .calc{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  .inv-hero{padding:2.25rem 1.25rem}.inv-hero h1{font-size:30px}
+  .inv-sec{padding:2rem 1rem}
+  .desk-grid,.rep-grid{grid-template-columns:1fr}
+  .rep-strip{grid-template-columns:1fr 1fr}
+  .sec-head{flex-direction:column;align-items:flex-start}
+  .desk-switch{display:none}
+  .rep-detail{padding:1.25rem 1rem}.rep-hd h1{font-size:23px}
+  .calc-2{grid-template-columns:1fr}
+  .result-big{font-size:38px}
+}
+
+
+</style>
+</head>
+<body class="inv">
+
+<nav>
+  <a class="logo-wrap" href="./" aria-label="ArticlesByArticle Investment home">
+    <span class="logo-mark">Articles<span>ByArticle</span></span>
+    <span class="logo-inv">Investment</span>
+  </a>
+  <div class="nav-links" id="navLinks"></div>
+  <div class="nav-right">
+    <a class="nav-btn mob-hide" href="../">Tax &amp; Law site</a>
+    <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu"></div>
+
+<!-- ===================== INVESTMENT DESK ===================== -->
+
+<!-- INVESTOR HOME -->
+<div id="page-investor">
+  <div class="inv-hero">
+    <div class="inv-hero-in">
+      <div>
+        <div class="eyebrow">ArticlesByArticle · Investment Desk</div>
+        <h1>Research and tools for <em>Indian public markets</em></h1>
+        <p>Equity research written by practising professionals, an IPO desk built on Basis-of-Allotment evidence, and calculators that answer the question you actually have before you bid.</p>
+        <div class="inv-cta">
+          <button class="btn-solid" onclick="location.href='IPO/'">Open the IPO desk</button>
+          <button class="btn-ghost" onclick="location.href='Tools/'">See the tools</button>
+        </div>
+      </div>
+      <div class="odds-card">
+        <h4>What the calculator answers</h4>
+        <div class="odds-row"><span>Retail at 22x subscription</span><span class="odds-val">5.5%</span></div>
+        <div class="odds-row"><span>Same odds, 3 separate PANs</span><span class="odds-val">15.6%</span></div>
+        <div class="odds-row"><span>Extra lots on one PAN</span><span class="odds-val">+0.0%</span></div>
+        <p class="odds-note">Above 1x, retail allotment is a flat lottery capped at one lot. More accounts raise your chance; more lots on the same PAN do not.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="inv-sec">
+    <div class="sec-head">
+      <div><h2>Three desks</h2><p>Each one built around a decision you have to make with real money.</p></div>
+    </div>
+    <div class="desk-grid">
+      <div class="desk-card" onclick="location.href='Tools/'">
+        <div class="desk-icon">%</div>
+        <h3>Tools</h3>
+        <p>The configurable scraper: an Excel sheet of URLs in, structured JSON out, batched and checkpointed — including pages behind a login.</p>
+        <div class="go">Open tools →</div>
+      </div>
+      <div class="desk-card" onclick="location.href='Research/'">
+        <div class="desk-icon">₹</div>
+        <h3>Equity research reports</h3>
+        <p>Company notes with a stated view, a target price and the assumptions behind it — so you can disagree with the reasoning, not just the number.</p>
+        <div class="go">Read reports →</div>
+      </div>
+      <div class="desk-card" onclick="location.href='IPO/'">
+        <div class="desk-icon">◎</div>
+        <h3>IPO desk</h3>
+        <p>The allotment calculator, the mechanics behind it, and 45 real issues with subscription by category and listing outcomes.</p>
+        <div class="go">Open the IPO desk →</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="inv-sec" style="padding-top:0">
+    <div class="sec-head">
+      <div><h2>Latest research</h2><p>Every note carries its rating, target and time horizon on the front.</p></div>
+      <a href="Research/">All reports →</a>
+    </div>
+    <div class="rep-grid" id="invRepPreview"></div>
+  </div>
+
+  <div class="desk-band">
+    <div class="desk-band-in">
+      <div class="sec-head"><div><h2>Two desks, one masthead</h2><p>Markets and IPOs here; tax and law on the main site</p></div></div>
+      <div class="desk-pair">
+        <div class="desk-tile here">
+          <div class="eyebrow">You are here</div>
+          <h3>ArticlesByArticle Investment</h3>
+          <p>Equity research, allotment calculators and the IPO desk — built for the decision you make before the money moves.</p>
+          <div class="go">Currently browsing</div>
+        </div>
+        <a class="desk-tile away" href="../">
+          <div class="eyebrow">Switch desk</div>
+          <h3>ArticlesByArticle</h3>
+          <p>Income Tax, GST and Customs analysis written by practising Chartered Accountants — judgments, circulars and compliance changes explained in full.</p>
+          <div class="go">Open the tax desk →</div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>&copy; 2026 <span>ArticlesByArticle Investment</span> — research, tools and IPO analytics. Educational content only, not investment advice. Markets carry risk of loss.</footer>
+
+<script>
+
+const NAV=[['../','Tax &amp; Law site'],['IPO/','IPO Desk'],['Research/','Research Reports'],['Tools/','Tools']];
+
+function buildNav(){
+  document.getElementById('navLinks').innerHTML=
+    '<a href="IPO/">IPO Desk</a><a href="Research/">Research Reports</a><a href="Tools/">Tools</a>';
+  document.getElementById('mobileMenu').innerHTML=
+    '<a href="IPO/">IPO Desk</a><a href="Research/">Research Reports</a><a href="Tools/">Tools</a>'
+    +'<a href="../" class="mob-join-btn">← Tax &amp; Law site</a>';
+}
+
+/* ---------- investment overview ---------- */
+buildNav();
+
+const inr=n=>'₹'+Math.round(n).toLocaleString('en-IN');
+function fmtDate(d){return new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});}
+
+const REPORTS=[
+  {id:1,company:"Maruti Suzuki India Ltd",ticker:"MARUTI",sector:"Automobiles",rating:"Hold",cmp:13834,target:13950,horizon:"12 months",analyst:"Sachin Agrawal",date:"2026-08-15",
+   href:"EquityMarutiSuzukiIndiaLtd/",
+   thesis:"FY26 was a record year on volume and revenue and one of the weakest on earnings quality — revenue grew 19.9%, profit after tax grew 1.2%. A high-quality franchise at a full price, mid-transition."}
+];
+
+function repCard(r){
+  const up=((r.target-r.cmp)/r.cmp*100);
+  return '<div class="rep-card" onclick="location.href=\''+r.href+'\'">'+
+    '<div class="rep-top"><div><div class="rep-tick">'+r.ticker+' · '+r.sector+'</div><h3>'+r.company+'</h3></div>'+
+    '<span class="rating '+r.rating.toLowerCase()+'">'+r.rating+'</span></div>'+
+    '<div class="rep-body"><p>'+r.thesis+'</p></div>'+
+    '<div class="rep-nums">'+
+      '<div><div class="lbl">Price</div><div class="val">'+inr(r.cmp)+'</div></div>'+
+      '<div><div class="lbl">Target</div><div class="val">'+inr(r.target)+'</div></div>'+
+      '<div><div class="lbl">Upside</div><div class="val '+(up>=0?'up':'down')+'">'+up.toFixed(1)+'%</div></div>'+
+    '</div>'+
+    '<div class="rep-foot"><span>'+r.analyst+'</span><span>'+fmtDate(r.date)+'</span></div></div>';
+}
+document.getElementById('invRepPreview').innerHTML=REPORTS.slice(0,3).map(repCard).join('');
+
+function toggleMobileMenu(){
+  document.getElementById('mobileMenu').classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('open');
+}
+function closeMobileMenu(){
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+}
+document.addEventListener('click',function(e){
+  const m=document.getElementById('mobileMenu'),b=document.getElementById('hamburger');
+  if(m.classList.contains('open')&&!m.contains(e.target)&&!b.contains(e.target))closeMobileMenu();
+});
+</script>
+</body>
+</html>
