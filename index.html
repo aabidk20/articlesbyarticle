@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ArticlesByArticle — CA Law Knowledge Hub</title>
+<title>ArticlesByArticle, CA Law Knowledge Hub</title>
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -32,7 +32,7 @@ nav{background:var(--dark);padding:0 2rem;display:flex;align-items:center;justif
 .nav-logo span{color:var(--logo)}
 .nav-links{display:flex;gap:0;height:60px}
 .nav-links a{color:rgba(255,255,255,0.75);font-size:13px;font-weight:400;text-decoration:none;padding:0 1rem;display:flex;align-items:center;border-bottom:2px solid transparent;transition:all 0.2s}
-.nav-links a:hover,.nav-links a.active{color:var(--white);border-bottom-color:var(--gold)}
+.nav-links a:hover.nav-links a.active{color:var(--white);border-bottom-color:var(--gold)}
 .nav-right{display:flex;align-items:center;gap:1rem}
 .nav-search{background:rgba(255,255,255,0.1);border:0.5px solid rgba(255,255,255,0.2);border-radius:20px;padding:6px 14px;color:var(--white);font-size:12px;font-family:Calibri,'Carlito','Segoe UI',sans-serif;outline:none;width:180px}
 .nav-search::placeholder{color:rgba(255,255,255,0.5)}
@@ -111,7 +111,7 @@ nav{background:var(--dark);padding:0 2rem;display:flex;align-items:center;justif
 .law-page-header p{color:rgba(255,255,255,0.6);font-size:13px;max-width:500px}
 .law-tag-strip{display:flex;gap:8px;flex-wrap:wrap;margin-top:1.25rem}
 .law-tag{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);border:0.5px solid rgba(255,255,255,0.15);font-size:11px;padding:4px 12px;border-radius:20px;cursor:pointer;transition:all 0.15s}
-.law-tag:hover,.law-tag.active{background:var(--gold);color:var(--white);border-color:var(--gold)}
+.law-tag:hover.law-tag.active{background:var(--gold);color:var(--white);border-color:var(--gold)}
 .law-articles-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
 .law-art-card{background:var(--white);border:0.5px solid var(--border);border-radius:8px;padding:1.25rem;cursor:pointer;transition:all 0.2s}
 .law-art-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.08)}
@@ -198,12 +198,12 @@ footer span{color:var(--gold)}
 .fld{margin-bottom:1.1rem}
 .fld label{display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.3px}
 .fld label span{color:#C04B1A}
-.fld input,.fld select,.fld textarea{width:100%;padding:10px 13px;border:0.5px solid var(--border);border-radius:6px;font-size:14px;font-family:Calibri,'Carlito','Segoe UI',sans-serif;color:var(--text);background:var(--white);outline:none;transition:border-color 0.15s}
-.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--dark)}
+.fld input.fld select.fld textarea{width:100%;padding:10px 13px;border:0.5px solid var(--border);border-radius:6px;font-size:14px;font-family:Calibri,'Carlito','Segoe UI',sans-serif;color:var(--text);background:var(--white);outline:none;transition:border-color 0.15s}
+.fld input:focus.fld select:focus.fld textarea:focus{border-color:var(--dark)}
 .fld textarea{resize:vertical;min-height:80px;line-height:1.6}
 .fld-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
 .pdf-drop{border:1.5px dashed var(--border);border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--cream);position:relative}
-.pdf-drop:hover,.pdf-drop.drag-over{border-color:var(--gold);background:#FFF8F0}
+.pdf-drop:hover.pdf-drop.drag-over{border-color:var(--gold);background:#FFF8F0}
 .pdf-drop input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
 .pdf-icon{font-size:28px;margin-bottom:8px;display:block}
 .pdf-drop p{font-size:13px;color:var(--text-muted);margin-bottom:4px}
@@ -212,7 +212,7 @@ footer span{color:var(--gold)}
 .join-submit{width:100%;padding:12px;background:var(--dark);color:var(--white);border:none;border-radius:6px;font-size:14px;font-weight:500;font-family:Calibri,'Carlito','Segoe UI',sans-serif;cursor:pointer;transition:background 0.2s;margin-top:0.5rem}
 .join-submit:hover{background:var(--logo)}
 .join-divider{text-align:center;color:var(--text-muted);font-size:12px;margin:1.25rem 0;position:relative}
-.join-divider::before,.join-divider::after{content:'';position:absolute;top:50%;width:42%;height:0.5px;background:var(--border)}
+.join-divider::before.join-divider::after{content:'';position:absolute;top:50%;width:42%;height:0.5px;background:var(--border)}
 .join-divider::before{left:0}.join-divider::after{right:0}
 .join-footer-note{text-align:center;font-size:12px;color:var(--text-muted);margin-top:1.25rem}
 .join-footer-note a{color:var(--dark);font-weight:500;cursor:pointer;text-decoration:none}
@@ -284,7 +284,7 @@ footer span{color:var(--gold)}
   .articles-page{padding:1rem}.filter-bar{flex-direction:column;align-items:stretch;gap:0.75rem}
   .filter-bar input[type=text]{min-width:unset;width:100%}.filter-bar select{width:100%}.filter-label{display:none}
   .art-row{grid-template-columns:1fr;gap:0.5rem}.art-row-meta{flex-wrap:wrap;gap:0.4rem}.art-row > div:last-child{display:flex;justify-content:flex-start}
-  .publishers-page{padding:1rem}.publishers-grid{grid-template-columns:1fr}.pub-filter{flex-direction:column}.pub-filter input,.pub-filter select{width:100%}
+  .publishers-page{padding:1rem}.publishers-grid{grid-template-columns:1fr}.pub-filter{flex-direction:column}.pub-filter input.pub-filter select{width:100%}
   .art-detail{padding:1.25rem 1rem}.art-detail-title{font-size:26px}.art-detail-meta{gap:0.6rem;flex-direction:column;align-items:flex-start}
   .art-authors{flex-direction:column;gap:0.75rem}.art-author-card{width:100%}.art-body{font-size:14px}.art-body h2{font-size:20px}
   .art-footer{flex-direction:column;align-items:flex-start}.section-heading h2{font-size:26px}
@@ -360,7 +360,7 @@ footer span{color:var(--gold)}
         <div class="feat-main" onclick="openArticle(5)">
           <div class="feat-cat">Income Tax · Deep Dive</div>
           <h2>Understanding the Income Tax Act, 2025</h2>
-          <p>The passage of the Income Tax Act, 2025 marks a landmark shift in India's direct tax framework. Enacted after intensive parliamentary deliberation, the legislation replaces the Income-tax Act, 1961 — a law that had accumulated over 4,000 amendments across six decades — with a streamlined, plain-language statute designed to enhance transparency, reduce litigation, and embed digital compliance at its core.</p>
+          <p>The passage of the Income Tax Act, 2025 marks a landmark shift in India's direct tax framework. Enacted after intensive parliamentary deliberation, the legislation replaces the Income-tax Act, 1961, a law that had accumulated over 4,000 amendments across six decades, with a streamlined, plain-language statute designed to enhance transparency, reduce litigation, and embed digital compliance at its core.</p>
           <div class="feat-author">
             <div class="avatar">SC</div>
             <div>
@@ -383,7 +383,7 @@ footer span{color:var(--gold)}
         <div class="desk-tile here">
           <div class="eyebrow">You are here</div>
           <h3>ArticlesByArticle</h3>
-          <p>Income Tax, GST and Customs analysis written by practising Chartered Accountants — judgments, circulars and compliance changes explained in full.</p>
+          <p>Income Tax, GST and Customs analysis written by practising Chartered Accountants, judgments, circulars and compliance changes explained in full.</p>
           <div class="go">Currently browsing</div>
         </div>
         <a class="desk-tile away" href="Investment/">
@@ -402,7 +402,7 @@ footer span{color:var(--gold)}
   <div class="law-page">
     <div class="law-page-header">
       <h1>Income Tax Articles</h1>
-      <p>In-depth analysis of the Income Tax Act — assessments, deductions, appeals, TDS, capital gains, international tax and more.</p>
+      <p>In-depth analysis of the Income Tax Act, assessments, deductions, appeals, TDS, capital gains, international tax and more.</p>
     </div>
     <div class="law-articles-grid" id="income-grid"></div>
   </div>
@@ -413,7 +413,7 @@ footer span{color:var(--gold)}
   <div class="law-page">
     <div class="law-page-header">
       <h1>GST Articles</h1>
-      <p>Comprehensive coverage of CGST, SGST, IGST — ITC, returns, audit, e-invoicing, e-way bills and refunds.</p>
+      <p>Comprehensive coverage of CGST, SGST, IGST, ITC, returns, audit, e-invoicing, e-way bills and refunds.</p>
     </div>
     <div class="law-articles-grid" id="gst-grid"></div>
   </div>
@@ -558,7 +558,7 @@ footer span{color:var(--gold)}
 </div>
 
 
-<footer>&copy; 2026 <span>ArticlesByArticle</span> — India's CA Law Knowledge Platform. All articles are for educational purposes only and do not constitute legal advice.</footer>
+<footer>&copy; 2026 <span>ArticlesByArticle</span>. India's CA Law Knowledge Platform. All articles are for educational purposes only and do not constitute legal advice.</footer>
 
 <script>
 const ARTICLES = [
@@ -686,9 +686,9 @@ const ARTICLES = [
     {type:"h3",text:"1. Simple Bill-to/Ship-to"},
     {type:"p",text:"A Ltd. (Chennai) bills B Ltd. (Bengaluru), but ships directly to C Ltd. (Mysuru) on B Ltd.'s instruction. Here, Ship-to GSTIN is C Ltd.'s GSTIN, since C Ltd. is a distinct registered recipient."},
     {type:"h3",text:"2. Delivery to the buyer's own branch"},
-    {type:"p",text:"A Ltd. bills B Ltd., and goods are delivered to B Ltd.'s own warehouse, which is an additional place of business of B Ltd. itself. Since the Bill-to and Ship-to are the same person, this is not a Bill-to/Ship-to transaction at all — it should be entered as a Regular transaction, with the delivery address recorded in the place-of-supply field."},
+    {type:"p",text:"A Ltd. bills B Ltd. and goods are delivered to B Ltd.'s own warehouse, which is an additional place of business of B Ltd. itself. Since the Bill-to and Ship-to are the same person, this is not a Bill-to/Ship-to transaction at all — it should be entered as a Regular transaction, with the delivery address recorded in the place-of-supply field."},
     {type:"h3",text:"3. Combination transaction"},
-    {type:"p",text:"A Ltd. bills B Ltd. Goods are dispatched from C Ltd.'s godown and delivered to D Ltd., as instructed by B Ltd. Ship-to GSTIN is D Ltd.'s GSTIN, while C Ltd.'s details are recorded as the dispatch-from party."},
+    {type:"p",text:"A Ltd. bills B Ltd. Goods are dispatched from C Ltd.'s godown and delivered to D Ltd. as instructed by B Ltd. Ship-to GSTIN is D Ltd.'s GSTIN, while C Ltd.'s details are recorded as the dispatch-from party."},
     {type:"h3",text:"4. Export movement"},
     {type:"p",text:"A Ltd. bills an overseas buyer, but goods physically move from A Ltd.'s factory to a port or ICD for export. Since no registered recipient exists at the port, 'URP' is entered as the Ship-to GSTIN, while the actual port or ICD address and PIN code are still recorded accurately. This treatment does not reclassify the transaction as a domestic supply to an unregistered person — the nature of the export continues to be governed by the shipping bill and other customs documentation."},
     {type:"h3",text:"5. Merchant exporter"},
@@ -920,7 +920,7 @@ async function submitRegister(){
     const FORMSPREE_ENDPOINT='https://formspree.io/f/xqejvdlb';
     const fd=new FormData();
     fd.append('_replyto',email);
-    fd.append('_subject','📝 New Author Registration — ArticlesByArticle');
+    fd.append('_subject','📝 New Author Registration, ArticlesByArticle');
     fd.append('Full Name',fname+' '+lname);
     fd.append('Email',email);fd.append('Mobile',mobile);
     fd.append('Membership No',memno||'—');fd.append('Specialisation',spec);
