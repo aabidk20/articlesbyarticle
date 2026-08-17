@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IPO Desk — Allotment Calculator &amp; Dataset | ArticlesByArticle Investment</title>
+<title>IPO Desk, Allotment Calculator &amp; Dataset | ArticlesByArticle Investment</title>
 <meta name="description" content="Work out your IPO allotment odds before you bid. Calculator built on SEBI allotment mechanics, a multi-account planner, and a dataset of 45 Indian IPOs with subscription and listing outcomes.">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -22,10 +22,10 @@ nav{background:var(--dark);padding:0 2rem;display:flex;align-items:center;justif
 .logo-inv{position:absolute;left:76%;top:50%;z-index:3;transform:translate(-50%,-50%) rotate(-40deg);font-size:10px;letter-spacing:2.2px;text-transform:uppercase;font-weight:700;white-space:nowrap;padding:2px 8px;border-radius:2px;pointer-events:none;color:var(--gold-light);border:1px solid rgba(143,203,234,0.7);background:rgba(14,58,87,0.82);box-shadow:0 2px 10px rgba(0,0,0,0.3)}
 .nav-links{display:flex}
 .nav-links a{color:rgba(255,255,255,0.75);font-size:13px;text-decoration:none;padding:0 1rem;display:flex;align-items:center;height:60px;border-bottom:2px solid transparent}
-.nav-links a:hover,.nav-links a.active{color:var(--white);border-bottom-color:var(--gold)}
+.nav-links a:hover.nav-links a.active{color:var(--white);border-bottom-color:var(--gold)}
 /* hero */
 .hero{background:var(--navy);color:var(--white);padding:2.75rem 2rem 2.25rem;position:relative;overflow:hidden}
-.hero::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,transparent 1px 64px),repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 64px);mask-image:linear-gradient(180deg,rgba(0,0,0,.5),transparent 78%);pointer-events:none}
+.hero::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255.05) 0 1px,transparent 1px 64px),repeating-linear-gradient(0deg,rgba(255,255,255.05) 0 1px,transparent 1px 64px);mask-image:linear-gradient(180deg,rgba(0,0,0.5),transparent 78%);pointer-events:none}
 .hero-in{max-width:1080px;margin:0 auto;position:relative;z-index:1}
 .crumb{font-size:12px;color:rgba(255,255,255,0.55);margin-bottom:1.1rem}
 .crumb a{color:var(--gold-light);text-decoration:none}
@@ -41,7 +41,7 @@ nav{background:var(--dark);padding:0 2rem;display:flex;align-items:center;justif
 .division{max-width:1080px;margin:0 auto;padding:1.5rem 2rem 0}
 .divswitch{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
 .divswitch button{background:var(--white);border:0.5px solid var(--border);border-radius:10px;padding:1.1rem 1.25rem;text-align:left;cursor:pointer;font-family:inherit;transition:all .18s;position:relative;overflow:hidden}
-.divswitch button:hover{border-color:var(--gold);box-shadow:0 6px 18px rgba(18,73,110,.08)}
+.divswitch button:hover{border-color:var(--gold);box-shadow:0 6px 18px rgba(18,73,110.08)}
 .divswitch button .n{font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--gold)}
 .divswitch button .t{font-size:18px;font-weight:700;letter-spacing:-0.3px;color:var(--text);margin:3px 0 3px}
 .divswitch button .d{font-size:12.5px;color:var(--text-muted);line-height:1.55}
@@ -70,8 +70,8 @@ p{margin-bottom:1.1rem;font-size:15px}
 .panel .sub{font-size:12.5px;color:var(--text-muted);margin-bottom:1.25rem;line-height:1.6}
 .fld{margin-bottom:0.9rem}
 .fld label{display:block;font-size:11px;font-weight:700;letter-spacing:0.4px;color:var(--text-muted);text-transform:uppercase;margin-bottom:5px}
-.fld input,.fld select{width:100%;padding:9px 12px;border:0.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:14px;color:var(--text);background:var(--white);outline:none;font-variant-numeric:tabular-nums}
-.fld input:focus,.fld select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(62,155,209,0.15)}
+.fld input.fld select{width:100%;padding:9px 12px;border:0.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:14px;color:var(--text);background:var(--white);outline:none;font-variant-numeric:tabular-nums}
+.fld input:focus.fld select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(62,155,209,0.15)}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
 .result{background:var(--navy);border-radius:10px;padding:1.5rem;color:var(--white);margin-bottom:1rem}
 .result .eyebrow{margin-bottom:0.45rem}
@@ -114,7 +114,7 @@ ul.plain{list-style:none;margin-bottom:1.1rem}
 ul.plain li{position:relative;padding-left:1.1rem;margin-bottom:0.5rem;font-size:14.5px}
 ul.plain li::before{content:'▪';position:absolute;left:0;color:var(--gold);font-weight:700}
 .filters{display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
-.filters input,.filters select{padding:8px 12px;border:0.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;background:var(--white);outline:none}
+.filters input.filters select{padding:8px 12px;border:0.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;background:var(--white);outline:none}
 .filters input{flex:1;min-width:180px}
 .count{font-size:12.5px;color:var(--text-muted)}
 footer{background:var(--dark);color:rgba(255,255,255,0.6);text-align:center;padding:2rem;font-size:12px;margin-top:3rem}
@@ -153,7 +153,7 @@ footer span{color:var(--gold-light)}
     <div class="crumb"><a href="../">Investment</a> · IPO Desk</div>
     <div class="eyebrow">IPO Desk</div>
     <h1>Work out your odds before you bid</h1>
-    <p class="tag">In an oversubscribed category, allotment is a computerised random draw. Nobody can tell you whether you will get shares. What can be worked out — and what this page does — is the probability, the capital it blocks, and whether an extra lot buys you anything at all. The desk splits in two: the mechanics and the evidence, and the calculator that runs on them.</p>
+    <p class="tag">In an oversubscribed category, allotment is a computerised random draw. Nobody can tell you whether you will get shares. What can be worked out is the probability, the capital it blocks, and whether an extra lot buys you anything at all. That is what this page does. The desk splits in two: the mechanics and the evidence, and the calculator that runs on them.</p>
     <div class="stat-row">
       <div><div class="lbl">IPOs in the dataset</div><div class="val" id="s_count">—</div></div>
       <div><div class="lbl">Median retail odds, Mainboard</div><div class="val" id="s_main">—</div></div>
@@ -207,12 +207,12 @@ footer span{color:var(--gold-light)}
 
 <div class="callout key">
   <strong class="h">The one-lot cap bites immediately above 1x</strong>
-  Alpine Texworld was subscribed just 1.36 times in retail and allotted exactly one lot — 142 shares — to every successful bidder, whether they had applied for one lot or thirteen. There is no gentle middle band; the transition from full allotment to flat lottery is sharp. Caliber Mining is the cleanest proof: its published ratio of 62:1949 was identical for every bid size from one lot to forty-seven. Once retail is oversubscribed, extra lots on the same PAN buy nothing at all — the capital is blocked for zero additional chance.
+  Alpine Texworld was subscribed just 1.36 times in retail and allotted exactly one lot, 142 shares, to every successful bidder, whether they had applied for one lot or thirteen. There is no gentle middle band; the transition from full allotment to flat lottery is sharp. Caliber Mining is the cleanest proof: its published ratio of 62:1949 was identical for every bid size from one lot to forty-seven. Once retail is oversubscribed, extra lots on the same PAN buy nothing at all, the capital is blocked for zero additional chance.
 </div>
 
 <div class="callout warn">
   <strong class="h">Be careful with bNII when it is oversubscribed</strong>
-  An oversubscribed bNII applicant blocks more than ₹10 lakh and receives roughly ₹2 lakh worth. Lohia Corp's bNII bidders applied for 2,380 shares and were allotted 490 — the sNII minimum. Only when a category is barely oversubscribed does allotment approach the full bid: Manipal's bNII at 1.07x allotted 1,606 shares of a 1,700-share bid.
+  An oversubscribed bNII applicant blocks more than ₹10 lakh and receives roughly ₹2 lakh worth. Lohia Corp's bNII bidders applied for 2,380 shares and were allotted 490, the sNII minimum. Only when a category is barely oversubscribed does allotment approach the full bid: Manipal's bNII at 1.07x allotted 1,606 shares of a 1,700-share bid.
 </div>
 
 <h3 class="sub">Where the calibration factor comes from</h3>
@@ -235,7 +235,7 @@ footer span{color:var(--gold-light)}
 </tbody>
 </table>
 </div>
-<p class="src">Source: Basis of Allotment documents published by the respective registrars. Mainboard oversubscribed cases average a factor of 1.28, ranging from 1.14 to 1.50 — a small sample, so 1.21 should be read as a rough central value rather than a constant. Millworks confirms the SME reasoning: 100% of its applications were for exactly 800 shares, and its factor came out at 0.93, meaning no uplift at all.</p>
+<p class="src">Source: Basis of Allotment documents published by the respective registrars. Mainboard oversubscribed cases average a factor of 1.28, ranging from 1.14 to 1.50, a small sample, so 1.21 should be read as a rough central value rather than a constant. Millworks confirms the SME reasoning: 100% of its applications were for exactly 800 shares, and its factor came out at 0.93, meaning no uplift at all.</p>
 
 <h2 class="sec" id="dataset">The dataset</h2>
 <p class="seclead">Every issue below was captured page by page with the scraping tool, parsed into JSON and consolidated. Subscription figures are final where the page published them.</p>
@@ -295,7 +295,7 @@ footer span{color:var(--gold-light)}
 
 <div class="callout">
   <strong class="h">The practical consequence</strong>
-  The IPOs that are easiest to get an allotment in are, on this evidence, the ones that tended to list flattest — and the ones that listed best were the ones where the odds were worst. That tension is the whole problem. It is also why spreading applications across separate PANs matters more than sizing any single one: you cannot improve your odds on a hot issue by bidding more, only by applying more times, legitimately, through genuinely separate applicants.
+  The IPOs that are easiest to get an allotment in are, on this evidence, the ones that tended to list flattest, and the ones that listed best were the ones where the odds were worst. That tension is the whole problem. It is also why spreading applications across separate PANs matters more than sizing any single one: you cannot improve your odds on a hot issue by bidding more, only by applying more times, legitimately, through genuinely separate applicants.
 </div>
 
 <h3 class="sub">Rules of thumb this supports</h3>
@@ -303,9 +303,9 @@ footer span{color:var(--gold-light)}
   <li><strong>Apply in retail</strong> unless another category is visibly less subscribed on the day you decide.</li>
   <li><strong>Prefer larger issues.</strong> Odds improve sharply with issue size, because the reservation grows faster than the applicant pool.</li>
   <li><strong>Bid the minimum lot</strong> unless retail is tracking at or below roughly 1x late in the bidding window.</li>
-  <li><strong>Spread across accounts rather than stacking lots</strong> — the same money, several times the chance.</li>
+  <li><strong>Spread across accounts rather than stacking lots.</strong> The same money, several times the chance.</li>
   <li><strong>Check subscription on day two or three.</strong> Day-one figures consistently understate final demand and will mislead you.</li>
-  <li><strong>Treat bNII with caution when oversubscribed</strong> — it blocks over ₹10 lakh to deliver about ₹2 lakh.</li>
+  <li><strong>Treat bNII with caution when oversubscribed.</strong> It blocks over ₹10 lakh to deliver about ₹2 lakh.</li>
 </ul>
 
 <h2 class="sec" id="limits">What this does not do</h2>
@@ -321,7 +321,7 @@ footer span{color:var(--gold-light)}
 
 <div id="div-calc" style="display:none">
 <h2 class="sec" id="calculator">Allotment calculator</h2>
-<p class="seclead">Enter what the exchange is showing during the bidding window. Nothing is sent anywhere — it all runs in your browser.</p>
+<p class="seclead">Enter what the exchange is showing during the bidding window. Nothing is sent anywhere, it all runs in your browser.</p>
 
 <div class="tabs" id="tabs">
   <button class="on" onclick="switchTool('odds',this)">Allotment odds</button>
@@ -332,7 +332,7 @@ footer span{color:var(--gold-light)}
   <div class="calc">
     <div class="panel">
       <h3>Chance of allotment</h3>
-      <p class="sub">The estimate uses a calibration factor derived from ten published Basis-of-Allotment documents: 1.21 for Mainboard, 1.00 for SME. Mainboard lots are cheap enough that many investors bid several, so there are fewer applicants than the share-based subscription figure implies — which makes the real odds better than 1/subscription. SME tickets are large, almost everyone bids the minimum, and the two measures converge.</p>
+      <p class="sub">The estimate uses a calibration factor derived from ten published Basis-of-Allotment documents: 1.21 for Mainboard, 1.00 for SME. Mainboard lots are cheap enough that many investors bid several, so there are fewer applicants than the share-based subscription figure implies, which makes the real odds better than 1/subscription. SME tickets are large, almost everyone bids the minimum, and the two measures converge.</p>
       <div class="fld">
         <label>Segment</label>
         <select id="a_seg" onchange="calcOdds()"><option value="1.21">Mainboard</option><option value="1.00">SME</option></select>
@@ -420,7 +420,7 @@ footer span{color:var(--gold-light)}
 
 <div class="callout key" style="margin-top:2rem">
   <strong class="h">Reading the result</strong>
-  The percentage is the chance that one application is allotted, not the chance that you personally get shares in this particular draw. Run it again with the number of separate PANs you actually have — that figure moves the outcome far more than anything else on the form, because above roughly 1x subscription a bigger bid on one PAN changes nothing at all.
+  The percentage is the chance that one application is allotted, not the chance that you personally get shares in this particular draw. Run it again with the number of separate PANs you actually have, that figure moves the outcome far more than anything else on the form, because above roughly 1x subscription a bigger bid on one PAN changes nothing at all.
 </div>
 
 <p style="margin-top:1.5rem"><a href="#mechanics" onclick="showDivision('info');setTimeout(function(){document.getElementById('mechanics').scrollIntoView()},50)" style="color:var(--navy-light);font-weight:700;text-decoration:none;font-size:13.5px">Where these numbers come from →</a></p>
@@ -430,7 +430,7 @@ footer span{color:var(--gold-light)}
 
 </div>
 
-<footer>&copy; 2026 <span>ArticlesByArticle Investment</span> — research, tools and IPO analytics. Educational content only, not investment advice. Markets carry risk of loss.</footer>
+<footer>&copy; 2026 <span>ArticlesByArticle Investment</span>. Research, tools and IPO analytics. Educational content only, not investment advice. Markets carry risk of loss.</footer>
 
 <script>
 const IPOS=[
@@ -510,7 +510,7 @@ function median(a){
   document.getElementById('p_odds').innerHTML=
     'Across the '+IPOS.filter(o=>o.r!==null).length+' issues that published final subscription, the median estimated retail chance was <strong>'+
     median(main).toFixed(1)+'%</strong> on the mainboard against <strong>'+median(sme).toFixed(1)+
-    '%</strong> on SME — roughly '+(median(main)/median(sme)).toFixed(0)+
+    '%</strong> on SME, roughly '+(median(main)/median(sme)).toFixed(0)+
     ' times better. Median retail subscription was '+median(IPOS.filter(o=>o.s==='Mainboard').map(o=>o.r)).toFixed(1)+
     'x and '+median(IPOS.filter(o=>o.s==='SME').map(o=>o.r)).toFixed(1)+'x respectively.';
 
@@ -612,7 +612,7 @@ function calcOdds(){
 
   document.getElementById('r_odds').textContent=(p*100).toFixed(1)+'%';
   document.getElementById('r_note').textContent=
-    sub<=1?'At '+sub+'x the category is not oversubscribed — every bid is allotted in full.'
+    sub<=1?'At '+sub+'x the category is not oversubscribed, every bid is allotted in full.'
           :'Estimated from '+sub+'x subscription using a '+f.toFixed(2)+' calibration factor. Roughly 1 in '+Math.round(1/p)+' applications.';
   document.getElementById('r_block').textContent=blocked>0?inr(blocked):'—';
   document.getElementById('r_total').textContent=total>0?inr(total):'—';
@@ -624,7 +624,7 @@ function calcOdds(){
   let v;
   if(sub<=1) v='<strong>Bid more than the minimum</strong>The category is undersubscribed, so extra lots are actually allotted. This is the one situation where bidding above the minimum pays.';
   else if(sub<1.5) v='<strong>Watch the final day</strong>At '+sub+'x it is close enough to 1x that extra lots may still get partial allotment. Decide on day three, not day one.';
-  else if(cat==='Retail') v='<strong>Minimum lot only</strong>Above roughly 1.5x, retail allotment is a flat lottery capped at one lot — a thirteen-lot bid and a one-lot bid have the same chance. Put the spare capital behind another PAN instead.';
+  else if(cat==='Retail') v='<strong>Minimum lot only</strong>Above roughly 1.5x, retail allotment is a flat lottery capped at one lot, a thirteen-lot bid and a one-lot bid have the same chance. Put the spare capital behind another PAN instead.';
   else v='<strong>Check what you actually receive</strong>An oversubscribed '+cat+' bid blocks '+inr(blocked)+' but is allotted about '+inr(allotVal)+' worth. The blocked capital earns nothing while it waits.';
   document.getElementById('r_verdict').innerHTML=v;
 }
@@ -660,7 +660,7 @@ function calcMix(){
     '<tr'+(i===0?' style="background:#DCEDF9"':'')+'><td>'+label(o)+'</td><td class="num">'+inr(o.capital)+
     '</td><td class="num">'+o.lots.toFixed(3)+'</td><td class="num">'+(o.any*100).toFixed(1)+'%</td></tr>').join('');
   document.getElementById('x_verdict').innerHTML=
-    '<strong>Accounts are the scarce resource, not rupees</strong>Adding accounts buys certainty, not a better rate — expected profit and capital both scale together, so the return on capital stays flat while the chance of getting something rises.';
+    '<strong>Accounts are the scarce resource, not rupees</strong>Adding accounts buys certainty, not a better rate, expected profit and capital both scale together, so the return on capital stays flat while the chance of getting something rises.';
 }
 
 calcOdds();calcMix();
