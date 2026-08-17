@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tools — Configurable Web Scraper | ArticlesByArticle Investment</title>
+<meta name="description" content="A configurable web scraping tool that turns an Excel sheet of URLs into structured JSON, with batching and checkpointing, including pages behind a login.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#12496E;--dark:#0E3A57;--logo:#8FCBEA;--navy-light:#1B5F8C;
+  --gold:#3E9BD1;--gold-light:#8FCBEA;--cream:#EEF6FC;
+  --text:#0F2230;--text-muted:#5C748A;--border:#CBE0F0;
+  --white:#FFFFFF;--up:#0F7A4A;--down:#C0392B;--warn:#B7791F;
+}
+body{font-family:Calibri,'Carlito','Segoe UI',sans-serif;color:var(--text);background:var(--cream);line-height:1.65}
+img{max-width:100%;height:auto;display:block}
+nav{background:var(--dark);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;height:60px}
+.logo-wrap{position:relative;display:inline-flex;align-items:center;height:60px;padding:0 14px 0 4px;text-decoration:none}
+.logo-mark{position:relative;z-index:1;font-size:22px;font-weight:700;color:var(--white);letter-spacing:-0.4px;line-height:1}
+.logo-mark span{color:var(--logo)}
+.logo-inv{position:absolute;left:76%;top:50%;z-index:3;transform:translate(-50%,-50%) rotate(-40deg);font-size:10px;letter-spacing:2.2px;text-transform:uppercase;font-weight:700;white-space:nowrap;padding:2px 8px;border-radius:2px;pointer-events:none;color:var(--gold-light);border:1px solid rgba(143,203,234,0.7);background:rgba(14,58,87,0.82);box-shadow:0 2px 10px rgba(0,0,0,0.3)}
+.nav-links{display:flex}
+.nav-links a{color:rgba(255,255,255,0.75);font-size:13px;text-decoration:none;padding:0 1rem;display:flex;align-items:center;height:60px;border-bottom:2px solid transparent}
+.nav-links a:hover,.nav-links a.active{color:var(--white);border-bottom-color:var(--gold)}
+.hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:6px;width:36px;height:36px}
+.hamburger span{display:block;height:2px;background:var(--white);border-radius:2px;transition:all .25s}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobile-menu{display:none;position:fixed;top:60px;left:0;right:0;background:var(--dark);z-index:99;flex-direction:column;border-top:0.5px solid rgba(255,255,255,0.1);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+.mobile-menu.open{display:flex}
+.mobile-menu a{color:rgba(255,255,255,0.85);font-size:14px;text-decoration:none;padding:1rem 1.5rem;border-bottom:0.5px solid rgba(255,255,255,0.08);display:block}
+.hero{background:var(--navy);color:var(--white);padding:2.75rem 2rem 2.25rem;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,transparent 1px 64px),repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 64px);mask-image:linear-gradient(180deg,rgba(0,0,0,.5),transparent 78%);pointer-events:none}
+.hero-in{max-width:1080px;margin:0 auto;position:relative;z-index:1}
+.crumb{font-size:12px;color:rgba(255,255,255,0.55);margin-bottom:1.1rem}
+.crumb a{color:var(--gold-light);text-decoration:none}
+.eyebrow{font-size:10px;letter-spacing:2.6px;text-transform:uppercase;color:var(--gold-light);font-weight:700}
+.hero h1{font-size:38px;font-weight:700;letter-spacing:-0.8px;line-height:1.12;margin:0.6rem 0 0.6rem}
+.hero p.tag{font-size:15px;color:rgba(255,255,255,0.7);max-width:660px}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.16);border-radius:10px;overflow:hidden;margin-top:1.75rem}
+.stat-row div{background:rgba(255,255,255,0.08);padding:0.95rem 1rem}
+.stat-row .lbl{font-size:9.5px;letter-spacing:1.1px;text-transform:uppercase;color:rgba(255,255,255,0.6);font-weight:700}
+.stat-row .val{font-size:23px;font-weight:700;margin-top:3px;font-variant-numeric:tabular-nums;letter-spacing:-0.5px}
+.wrap{max-width:1080px;margin:0 auto;padding:2.5rem 2rem 1rem}
+h2.sec{font-size:24px;font-weight:700;letter-spacing:-0.4px;color:var(--navy);margin:3rem 0 0.5rem;padding-bottom:0.6rem;border-bottom:2px solid var(--navy)}
+h2.sec:first-of-type{margin-top:0}
+p.seclead{font-size:14px;color:var(--text-muted);margin:-0.25rem 0 1.5rem}
+p{margin-bottom:1.1rem;font-size:15px}
+footer{background:var(--dark);color:rgba(255,255,255,0.6);text-align:center;padding:2rem;font-size:12px;margin-top:3rem}
+footer span{color:var(--gold-light)}
+.backlink{display:inline-block;margin-top:2rem;font-size:13px;color:var(--navy-light);text-decoration:none;font-weight:700}
+@media(max-width:768px){
+  nav{padding:0 1rem}.nav-links{display:none}.hamburger{display:flex}
+  .hero{padding:1.75rem 1.15rem}.hero h1{font-size:27px}
+  .stat-row{grid-template-columns:1fr 1fr}
+  .wrap{padding:1.5rem 1.15rem 1rem}
+  h2.sec{font-size:20px}
+}
+
+/* ---- code blocks with copy ---- */
+.codebox{margin-bottom:1.25rem;border-radius:8px;overflow:hidden;border:0.5px solid var(--border)}
+.codebox .code-head{display:flex;justify-content:space-between;align-items:center;background:var(--dark);color:rgba(255,255,255,0.8);padding:0.55rem 0.9rem;border-radius:0;gap:0.75rem;flex-wrap:wrap}
+.codebox .fname{font-family:Consolas,'Courier New',monospace;font-size:11.5px;letter-spacing:0;text-transform:none;color:var(--gold-light)}
+.code-actions{display:flex;gap:0.5rem;align-items:center}
+.code-actions button,.code-actions a{background:rgba(255,255,255,0.12);border:0.5px solid rgba(255,255,255,0.25);color:var(--white);font-family:inherit;font-size:11px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;padding:4px 11px;border-radius:4px;cursor:pointer;text-decoration:none;white-space:nowrap}
+.code-actions button:hover,.code-actions a:hover{background:var(--gold);border-color:var(--gold)}
+.code-actions button.done{background:var(--up);border-color:var(--up)}
+pre.code{background:#0B2C42;color:#D6EAF6;font-family:Consolas,'Courier New',monospace;font-size:11.5px;line-height:1.65;padding:1.1rem;overflow-x:auto;margin:0;max-height:460px;white-space:pre}
+pre.code.short{max-height:300px}
+.scroll-note{font-size:11px;color:var(--text-muted);font-style:italic;margin:-0.75rem 0 1.25rem}
+/* download row */
+.dl-row{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1.5rem}
+.dl{display:block;background:#F6FBFE;border:0.5px solid var(--border);border-radius:8px;padding:1rem 1.1rem;text-decoration:none;transition:all .18s}
+.dl:hover{border-color:var(--gold);box-shadow:0 4px 14px rgba(18,73,110,.1)}
+.dl .ft{font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold);font-weight:700}
+.dl .fn{font-size:14px;font-weight:700;color:var(--text);margin:3px 0 2px}
+.dl .fd{font-size:11.5px;color:var(--text-muted);line-height:1.5}
+/* numbered how-to */
+ol.howto{counter-reset:h;list-style:none;margin-bottom:1.25rem}
+ol.howto li{counter-increment:h;position:relative;padding-left:2.6rem;margin-bottom:1rem;font-size:14px;line-height:1.65}
+ol.howto li::before{content:counter(h);position:absolute;left:0;top:0;width:26px;height:26px;border-radius:50%;background:var(--navy);color:var(--white);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.howto li strong{display:block;font-size:14.5px;margin-bottom:2px}
+code.inline{background:#DCEDF9;color:var(--navy);font-family:Consolas,'Courier New',monospace;font-size:12.5px;padding:1px 6px;border-radius:3px}
+.settings-tbl{width:100%;border-collapse:collapse;font-size:13px;background:var(--white);margin-bottom:1.25rem}
+.settings-tbl th{background:var(--navy);color:var(--white);text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:9px 12px}
+.settings-tbl td{padding:8px 12px;border-top:0.5px solid var(--border);vertical-align:top}
+.settings-tbl td:first-child{font-family:Consolas,'Courier New',monospace;font-size:12px;color:var(--navy);white-space:nowrap;font-weight:700}
+@media(max-width:768px){.dl-row{grid-template-columns:1fr}}
+
+/* ---- tools showcase ---- */
+.tool-block{background:var(--white);border:0.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1.5rem}
+.tool-top{padding:1.5rem 1.6rem;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;gap:1.25rem;flex-wrap:wrap}
+.tool-top h3{font-size:19px;font-weight:700;letter-spacing:-0.3px;margin-bottom:4px}
+.tool-top .kicker{font-size:10px;letter-spacing:2.2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:6px}
+.tool-top p{font-size:13.5px;color:var(--text-muted);max-width:620px;margin:0}
+.tool-badge{font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;padding:4px 10px;border-radius:3px;background:#E3F5EB;color:var(--up);white-space:nowrap}
+.tool-badge.build{background:#DCEDF9;color:var(--navy-light)}
+.tool-body{padding:1.5rem 1.6rem}
+.tool-body ul{list-style:none;margin-bottom:1.25rem}
+.mini-h{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--navy);font-weight:700;margin:1.75rem 0 0.7rem;padding-bottom:0.4rem;border-bottom:0.5px solid var(--border)}
+.tool-p{font-size:14px;line-height:1.7;margin-bottom:1rem}
+.tool-body li{position:relative;padding-left:1.15rem;margin-bottom:0.7rem;font-size:14px;line-height:1.65}
+.tool-body li::before{content:'▪';position:absolute;left:0;color:var(--gold);font-weight:700}
+.tool-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem}
+.tool-stats div{background:#F6FBFE;padding:0.85rem 0.9rem}
+.tool-stats .lbl{font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);font-weight:700}
+.tool-stats .val{font-size:19px;font-weight:700;margin-top:2px;font-variant-numeric:tabular-nums;color:var(--navy)}
+.pipeline{display:grid;grid-template-columns:repeat(4,1fr);gap:0.6rem;margin-bottom:1.25rem}
+.step{background:#F6FBFE;border:0.5px solid var(--border);border-radius:8px;padding:0.9rem}
+.step .n{font-size:10px;font-weight:700;color:var(--gold);letter-spacing:1px}
+.step .t{font-size:13px;font-weight:700;margin:3px 0 3px}
+.step p{font-size:11.5px;color:var(--text-muted);line-height:1.55;margin:0}
+.code-head{display:flex;justify-content:space-between;align-items:center;background:var(--dark);color:rgba(255,255,255,0.75);font-size:11px;letter-spacing:0.8px;text-transform:uppercase;font-weight:700;padding:0.6rem 1rem;border-radius:8px 8px 0 0}
+pre.code{background:#0B2C42;color:#D6EAF6;font-family:Consolas,'Courier New',monospace;font-size:12px;line-height:1.6;padding:1.1rem;border-radius:0 0 8px 8px;overflow-x:auto;margin-bottom:1rem}
+pre.code .k{color:#8FCBEA}
+.tool-cta{display:inline-block;background:var(--gold);color:var(--white);text-decoration:none;padding:10px 20px;border-radius:5px;font-size:13px;font-weight:700}
+.tool-cta:hover{background:var(--gold-light)}
+@media(max-width:768px){
+  .tool-stats,.pipeline{grid-template-columns:1fr 1fr}
+  .tool-top{flex-direction:column}
+}
+
+
+/* ---- tools showcase ---- */
+.tool-block{background:var(--white);border:0.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1.5rem}
+.tool-top{padding:1.5rem 1.6rem;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;gap:1.25rem;flex-wrap:wrap}
+.tool-top h3{font-size:19px;font-weight:700;letter-spacing:-0.3px;margin-bottom:4px}
+.tool-top .kicker{font-size:10px;letter-spacing:2.2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:6px}
+.tool-top p{font-size:13.5px;color:var(--text-muted);max-width:620px;margin:0}
+.tool-badge{font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;padding:4px 10px;border-radius:3px;background:#E3F5EB;color:var(--up);white-space:nowrap}
+.tool-badge.build{background:#DCEDF9;color:var(--navy-light)}
+.tool-body{padding:1.5rem 1.6rem}
+.tool-body ul{list-style:none;margin-bottom:1.25rem}
+.mini-h{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--navy);font-weight:700;margin:1.75rem 0 0.7rem;padding-bottom:0.4rem;border-bottom:0.5px solid var(--border)}
+.tool-p{font-size:14px;line-height:1.7;margin-bottom:1rem}
+.tool-body li{position:relative;padding-left:1.15rem;margin-bottom:0.7rem;font-size:14px;line-height:1.65}
+.tool-body li::before{content:'▪';position:absolute;left:0;color:var(--gold);font-weight:700}
+.tool-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem}
+.tool-stats div{background:#F6FBFE;padding:0.85rem 0.9rem}
+.tool-stats .lbl{font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);font-weight:700}
+.tool-stats .val{font-size:19px;font-weight:700;margin-top:2px;font-variant-numeric:tabular-nums;color:var(--navy)}
+.pipeline{display:grid;grid-template-columns:repeat(4,1fr);gap:0.6rem;margin-bottom:1.25rem}
+.step{background:#F6FBFE;border:0.5px solid var(--border);border-radius:8px;padding:0.9rem}
+.step .n{font-size:10px;font-weight:700;color:var(--gold);letter-spacing:1px}
+.step .t{font-size:13px;font-weight:700;margin:3px 0 3px}
+.step p{font-size:11.5px;color:var(--text-muted);line-height:1.55;margin:0}
+.code-head{display:flex;justify-content:space-between;align-items:center;background:var(--dark);color:rgba(255,255,255,0.75);font-size:11px;letter-spacing:0.8px;text-transform:uppercase;font-weight:700;padding:0.6rem 1rem;border-radius:8px 8px 0 0}
+pre.code{background:#0B2C42;color:#D6EAF6;font-family:Consolas,'Courier New',monospace;font-size:12px;line-height:1.6;padding:1.1rem;border-radius:0 0 8px 8px;overflow-x:auto;margin-bottom:1rem}
+pre.code .k{color:#8FCBEA}
+.tool-cta{display:inline-block;background:var(--gold);color:var(--white);text-decoration:none;padding:10px 20px;border-radius:5px;font-size:13px;font-weight:700}
+.tool-cta:hover{background:var(--gold-light)}
+@media(max-width:768px){
+  .tool-stats,.pipeline{grid-template-columns:1fr 1fr}
+  .tool-top{flex-direction:column}
+}
+
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo-wrap" href="../" aria-label="ArticlesByArticle Investment home">
+    <span class="logo-mark">Articles<span>ByArticle</span></span>
+    <span class="logo-inv">Investment</span>
+  </a>
+  <div class="nav-links"><a href="../">Overview</a><a href="../IPO/">IPO Desk</a><a href="../Research/">Research Reports</a><a href="../Tools/" class="active">Tools</a></div>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobileMenu"><a href="../">Overview</a><a href="../IPO/">IPO Desk</a><a href="../Research/">Research Reports</a><a href="../Tools/">Tools</a></div>
+
+<div class="hero">
+  <div class="hero-in">
+    <div class="crumb"><a href="../">Investment</a> · Tools</div>
+    <div class="eyebrow">Tools</div>
+    <h1>Getting at data that cannot be read off a page</h1>
+    <p class="tag">One tool so far. It exists because the data behind the IPO desk is published one page at a time, some of it behind a login, and none of it as a download.</p>
+  </div>
+</div>
+
+<div class="wrap">
+    <!-- 1. scraper -->
+    <div class="tool-block">
+      <div class="tool-top">
+        <div>
+          <div class="kicker">Data infrastructure</div>
+          <h3>Configurable web scraping tool</h3>
+          <p>Turns a list of URLs into a structured dataset, including pages that only exist behind a login.</p>
+        </div>
+        <span class="tool-badge">In use</span>
+      </div>
+      <div class="tool-body">
+        <ul>
+          <li>Built a configurable web scraping tool that extracts structured data from any website, including login-gated pages, by taking a user-defined Excel sheet of target URLs as input.</li>
+          <li>Designed the scraper to parse each page into structured JSON with automatic batching and checkpointing.</li>
+          <li>Compiled individual page-level outputs into a consolidated dataset, which fed directly into the IPO prediction model below.</li>
+        </ul>
+
+        <h4 class="mini-h">Why it runs in the browser</h4>
+        <p class="tool-p">Conventional scrapers run on a server and have to be told how to authenticate — which means handling credentials, cookies and whatever bot challenge the site puts in front of them. Automated attempts against this particular source failed on exactly that: Cloudflare challenges, dropped connections, timeouts, and content that never rendered at all.</p>
+        <p class="tool-p">This tool sidesteps the problem instead of fighting it. It runs inside the browser tab you are already logged into, so it inherits your session and reads precisely the pages you could open yourself by clicking. It never sees a password, never authenticates on your behalf, and never touches anything you do not already have access to. It also means content built by scripts after page load — the tables that a server-side fetch returns empty — is fully visible, because the browser has already drawn it.</p>
+
+        <h4 class="mini-h">The pipeline</h4>
+        <div class="pipeline">
+          <div class="step"><div class="n">01</div><div class="t">Excel input</div><p>Column A of <strong>Scrape-links.xlsx</strong> defines the run. Point it at a different site and nothing in the code changes.</p></div>
+          <div class="step"><div class="n">02</div><div class="t">Render, then read</div><p>Each URL loads in a reusable window. The script waits until the table count stops growing, so script-built tables are never read half-drawn.</p></div>
+          <div class="step"><div class="n">03</div><div class="t">Parse to JSON</div><p>Every table becomes a section with its heading and its rows. Structure is preserved rather than flattened.</p></div>
+          <div class="step"><div class="n">04</div><div class="t">Batch and checkpoint</div><p>A checkpoint file downloads every ten pages. A run that dies at record 47 resumes from 47 rather than starting over.</p></div>
+        </div>
+
+        <h4 class="mini-h">Running it, step by step</h4>
+        <ol class="howto">
+          <li><strong>List your targets</strong>Open <strong>Scrape-links.xlsx</strong> and put one URL per row in column A, starting at row 5. The remaining columns are for your own tracking and the script ignores them.</li>
+          <li><strong>Log in to the target site</strong>In the same browser, in a normal tab. This is the step that makes gated pages readable — everything downstream inherits this session.</li>
+          <li><strong>Open the console on that site</strong>Press <code class="inline">F12</code> on any page of the site you are scraping and switch to the Console tab. If the browser warns you about pasting, type <code class="inline">allow pasting</code> and press Enter. Paste on the same domain you are scraping — browsers block one origin from reading another's pages, so running it from elsewhere returns empty documents.</li>
+          <li><strong>Paste your URLs into the script</strong>Copy column A from the spreadsheet and paste it between the backticks in <code class="inline">URL_LIST</code>. Excel puts one URL per line on the clipboard, which is the format the script expects.</li>
+          <li><strong>Paste the script and run</strong>Copy it with the button below, paste into the console, press Enter. Allow popups when asked — the reusable window it opens is where each page is loaded.</li>
+          <li><strong>Watch the log</strong>Each page reports <code class="inline">OK</code>, <code class="inline">THIN</code> or <code class="inline">FAIL</code>. Thin means the page rendered fewer tables than expected and is worth re-running. A checkpoint downloads every ten records.</li>
+          <li><strong>Consolidate</strong>Run <code class="inline">python ingest_batch_json.py details_batch.json --output dataset.xlsx</code> to merge every page-level file, de-duplicate by URL and flatten the whole thing into one wide sheet — a row per page, a column per field.</li>
+        </ol>
+
+        <h4 class="mini-h">Settings you will actually change</h4>
+        <table class="settings-tbl">
+          <thead><tr><th>Setting</th><th>Default</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td>URL_LIST</td><td>—</td><td>Your targets, pasted from column A of the spreadsheet. Anything that is not an http address is ignored.</td></tr>
+            <tr><td>CHECKPOINT_EVERY</td><td>10</td><td>How often a partial file is downloaded. Lower it on an unreliable connection.</td></tr>
+            <tr><td>RESUME_FROM</td><td>0</td><td>Index to restart at. After a failure the console tells you the number to use.</td></tr>
+            <tr><td>RENDER_WAIT_MS</td><td>3500</td><td>Time each page gets before reading begins. Raise it on slow pages.</td></tr>
+            <tr><td>PAUSE_BETWEEN_MS</td><td>800</td><td>Gap between pages. Keep the pace polite.</td></tr>
+            <tr><td>MIN_TABLES_OK</td><td>3</td><td>Below this, a page is flagged as thin rather than accepted silently.</td></tr>
+          </tbody>
+        </table>
+
+        <h4 class="mini-h">Download what you need</h4>
+        <div class="dl-row">
+          <a class="dl" href="../assets/Scrape-links.xlsx" download>
+            <div class="ft">XLSX · Input template</div>
+            <div class="fn">Scrape links</div>
+            <div class="fd">Column A for your URLs, plus a How to use sheet. Fill it in and copy the column.</div>
+          </a>
+          <a class="dl" href="../assets/extract_details_batch.js" download>
+            <div class="ft">JS · Console script</div>
+            <div class="fn">extract_details_batch.js</div>
+            <div class="fd">The extractor. Paste into the console on the target site once you are logged in.</div>
+          </a>
+          <a class="dl" href="../assets/inspect_page_assets.js" download>
+            <div class="ft">JS · Diagnostic</div>
+            <div class="fn">inspect_page_assets.js</div>
+            <div class="fd">Run first on a new site to find content the table parser cannot see.</div>
+          </a>
+        </div>
+
+        <h4 class="mini-h">The extractor</h4>
+        <div class="codebox">
+          <div class="code-head">
+            <span class="fname">extract_details_batch.js</span>
+            <span class="code-actions">
+              <button onclick="copyCode(this,'code-extract')">Copy script</button>
+              <a href="../assets/extract_details_batch.js" download>Download</a>
+            </span>
+          </div>
+          <pre class="code" id="code-extract">/* =====================================================================
+   extract_details_batch.js  —  configurable page extractor
+   ---------------------------------------------------------------------
+   Reads a list of target URLs, opens each one inside your own logged-in
+   browser session, parses every table on the page into structured JSON,
+   and downloads the result in batches with checkpointing.
+
+   HOW TO USE
+     1. Fill column A of &quot;Scrape-links.xlsx&quot; with your target URLs.
+     2. Log in to the target site in this browser.
+     3. Open a page on that site, press F12, go to Console.
+        Type &quot;allow pasting&quot; if the browser asks.
+     4. Copy column A from the spreadsheet and paste it between the
+        backticks in URL_LIST below.
+     5. Paste this whole script into the console and press Enter.
+
+   WHY LOGIN-GATED PAGES WORK
+     The script runs inside the tab you are already authenticated in, so
+     it inherits your session cookies. It never sees or stores a password
+     and does not authenticate on your behalf — it reads exactly the
+     pages you could open yourself by clicking.
+
+   IMPORTANT
+     Paste this on the SAME DOMAIN you are scraping. Browsers block a page
+     on one origin from reading the contents of another, so running it
+     from a different site will return empty documents.
+   ===================================================================== */
+
+(async function () {
+
+  /* ---------------- paste your URLs between the backticks -------------- */
+  const URL_LIST = `
+https://www.example.com/page/1/
+https://www.example.com/page/2/
+`;
+
+  /* ---------------- settings ------------------------------------------ */
+  const CHECKPOINT_EVERY = 10;    // download a checkpoint every N pages
+  const RESUME_FROM      = 0;     // restart here after a failed run
+  const RENDER_WAIT_MS   = 3500;  // time given to each page to render
+  const SETTLE_TRIES     = 8;     // re-checks while the table count grows
+  const PAUSE_BETWEEN_MS = 800;   // politeness gap between pages
+  const MIN_TABLES_OK    = 3;     // fewer than this is flagged as thin
+
+  /* ---------------- prepare the queue --------------------------------- */
+  const urls = URL_LIST.split(/[\r\n]+/)
+    .map(u =&gt; u.trim())
+    .filter(u =&gt; /^https?:\/\//i.test(u));
+
+  if (!urls.length) {
+    console.error(&#x27;No URLs found. Paste them between the backticks in URL_LIST.&#x27;);
+    return;
+  }
+
+  const win = window.open(&#x27;about:blank&#x27;, &#x27;extractor&#x27;, &#x27;width=1280,height=900&#x27;);
+  if (!win) { console.error(&#x27;Popup blocked. Allow popups for this site and run again.&#x27;); return; }
+
+  const results = [];
+  let thin = 0, failed = 0;
+
+  console.log(`Queued ${urls.length} URLs. Starting at index ${RESUME_FROM}.`);
+
+  /* ---------------- helpers ------------------------------------------- */
+
+  const sleep = ms =&gt; new Promise(r =&gt; setTimeout(r, ms));
+
+  // Wait until the document is ready AND the table count stops growing,
+  // so pages that build their tables with scripts are not read too early.
+  async function waitForRender(w) {
+    await sleep(RENDER_WAIT_MS);
+    let last = -1;
+    for (let i = 0; i &lt; SETTLE_TRIES; i++) {
+      let now = 0;
+      try { now = w.document.querySelectorAll(&#x27;table&#x27;).length; } catch (e) { return 0; }
+      if (now &gt; 0 &amp;&amp; now === last) return now;
+      last = now;
+      await sleep(600);
+    }
+    return last;
+  }
+
+  const clean = s =&gt; (s || &#x27;&#x27;).replace(/\s+/g, &#x27; &#x27;).trim();
+
+  // The heading a table sits under: walk backwards through previous
+  // siblings, then up through ancestors, until a heading is found.
+  function titleFor(table) {
+    let node = table;
+    for (let hop = 0; hop &lt; 6 &amp;&amp; node; hop++) {
+      let sib = node.previousElementSibling;
+      while (sib) {
+        if (/^H[1-6]$/.test(sib.tagName)) return clean(sib.textContent);
+        const h = sib.querySelector &amp;&amp; sib.querySelector(&#x27;h1,h2,h3,h4,h5,h6&#x27;);
+        if (h) return clean(h.textContent);
+        sib = sib.previousElementSibling;
+      }
+      node = node.parentElement;
+    }
+    return &#x27;&#x27;;
+  }
+
+  function readTable(table) {
+    return Array.from(table.rows).map(r =&gt;
+      Array.from(r.cells).map(c =&gt; clean(c.innerText))
+    ).filter(row =&gt; row.some(cell =&gt; cell.length));
+  }
+
+  // Label/value pairs anywhere on the page, used for fields that are not
+  // in a table on every layout.
+  function findLabelled(doc, labelRe) {
+    const rows = Array.from(doc.querySelectorAll(&#x27;tr,li,div&#x27;));
+    for (const el of rows) {
+      const t = clean(el.innerText);
+      const m = t.match(labelRe);
+      if (m &amp;&amp; m[1] &amp;&amp; m[1].length &lt; 200) return clean(m[1]);
+    }
+    return null;
+  }
+
+  function download(obj, filename) {
+    const blob = new Blob([JSON.stringify(obj, null, 1)], { type: &#x27;application/json&#x27; });
+    const a = document.createElement(&#x27;a&#x27;);
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    setTimeout(() =&gt; URL.revokeObjectURL(a.href), 4000);
+  }
+
+  /* ---------------- parse one rendered page --------------------------- */
+  function parsePage(doc, url) {
+    const h1 = doc.querySelector(&#x27;h1&#x27;);
+    const rawTitle = clean(h1 ? h1.innerText : doc.title);
+
+    const tables = Array.from(doc.querySelectorAll(&#x27;table&#x27;));
+    const sections = tables.map(t =&gt; ({
+      title: titleFor(t),
+      rows: readTable(t)
+    })).filter(s =&gt; s.rows.length);
+
+    // De-duplicate consecutive identical headings: the second table under
+    // one heading keeps an empty title, which preserves the page order
+    // without pretending the heading applies twice.
+    for (let i = 1; i &lt; sections.length; i++) {
+      if (sections[i].title &amp;&amp; sections[i].title === sections[i - 1].title) {
+        sections[i].title = &#x27;&#x27;;
+      }
+    }
+
+    const bodyText = clean(doc.body ? doc.body.innerText : &#x27;&#x27;);
+
+    return {
+      company: rawTitle.replace(/\s*(IPO\s*)?Details\s*$/i, &#x27;&#x27;).trim(),
+      company_raw_title: rawTitle,
+      url: url,
+      scraped_at: new Date().toISOString(),
+      headline_strip: bodyText.slice(0, 400),
+      total_applications_text: findLabelled(doc, /Total\s+Applications?\s*[:\-]?\s*([\d,]+)/i),
+      registrar: findLabelled(doc, /Registrar\s*[:\-]?\s*(.+?)(?:Address|Phone|Email|$)/i),
+      lead_managers: Array.from(doc.querySelectorAll(&#x27;a,li&#x27;))
+        .map(el =&gt; clean(el.innerText))
+        .filter(t =&gt; /Lead Manager/i.test(t) === false &amp;&amp; /Pvt\.?Ltd\.?$|Limited$|Ltd\.$/.test(t) &amp;&amp; t.length &lt; 90)
+        .slice(0, 6),
+      sections: sections
+    };
+  }
+
+  /* ---------------- main loop ----------------------------------------- */
+  for (let i = RESUME_FROM; i &lt; urls.length; i++) {
+    const url = urls[i];
+    const tag = `[${i + 1}/${urls.length}]`;
+
+    try {
+      win.location.href = url;
+      const tableCount = await waitForRender(win);
+
+      if (!tableCount) {
+        results.push({ url, error: &#x27;no tables — page did not render or is cross-origin&#x27;, sections: [] });
+        failed++;
+        console.warn(`${tag} EMPTY  ${url}`);
+      } else {
+        const rec = parsePage(win.document, url);
+        results.push(rec);
+        if (tableCount &lt; MIN_TABLES_OK) {
+          thin++;
+          console.warn(`${tag} THIN   ${rec.company || url} — only ${tableCount} tables, may be partly rendered`);
+        } else {
+          console.log(`${tag} OK     ${rec.company || url} — ${rec.sections.length} sections`);
+        }
+      }
+    } catch (e) {
+      results.push({ url, error: String(e &amp;&amp; e.message || e), sections: [] });
+      failed++;
+      console.error(`${tag} FAIL   ${url} — ${e.message}`);
+    }
+
+    // Checkpoint: a run that dies at record 47 resumes instead of restarting.
+    if ((i + 1) % CHECKPOINT_EVERY === 0) {
+      download(results, `details_checkpoint_${i + 1}.json`);
+      console.log(`--- checkpoint saved at ${i + 1}. To resume later, set RESUME_FROM = ${i + 1} ---`);
+    }
+
+    await sleep(PAUSE_BETWEEN_MS);
+  }
+
+  /* ---------------- finish -------------------------------------------- */
+  download(results, &#x27;details_batch.json&#x27;);
+  try { win.close(); } catch (e) {}
+
+  console.log(&#x27;=== done ===&#x27;);
+  console.log(`captured ${results.length - failed} of ${urls.length} · thin ${thin} · failed ${failed}`);
+  console.log(&#x27;Next: python ingest_batch_json.py details_batch.json --output dataset.xlsx&#x27;);
+
+  window.__extractResults = results;   // also left in memory for inspection
+})();
+</pre>
+        </div>
+        <p class="scroll-note">Scroll inside the box to read the whole script, or use Copy and paste it straight into the console.</p>
+
+        <h4 class="mini-h">The diagnostic</h4>
+        <p class="tool-p">Before writing an extractor for an unfamiliar site, it is worth knowing what is actually on the page — and in particular what is <em>drawn</em> rather than written. Some sources publish key documents as scanned images or render them into a canvas element, which no text or table parser will ever pick up. This script reports every link, image, CSS background image and hard-coded asset URL on a page, then checks each canvas to see whether it can be captured or is blocked by cross-origin tainting. That single answer decides whether an image-based page is reachable at all, or whether it has to be handled by hand.</p>
+        <div class="codebox">
+          <div class="code-head">
+            <span class="fname">inspect_page_assets.js</span>
+            <span class="code-actions">
+              <button onclick="copyCode(this,'code-inspect')">Copy script</button>
+              <a href="../assets/inspect_page_assets.js" download>Download</a>
+            </span>
+          </div>
+          <pre class="code short" id="code-inspect">/* =====================================================================
+   inspect_page_assets.js  —  deep page inspector
+   ---------------------------------------------------------------------
+   Run this on a single page BEFORE writing an extractor for a new site,
+   or when the extractor returns nothing for a page that clearly has
+   content on screen.
+
+   It reports every link, image, CSS background image, hard-coded asset
+   URL and canvas element on the page, and tells you whether each canvas
+   can be captured or is blocked by cross-origin tainting. That is how
+   you find content that is drawn rather than written — a scanned image,
+   a chart, a PDF rendered into a canvas — which no text or table parser
+   will ever see.
+
+   Paste into the console on the target page, while logged in.
+   ===================================================================== */
+
+// Deep inspection: find EVERY possible asset URL on the LAPL page,
+// not just ones matching &quot;screenshots&quot;
+(async function() {
+  const url = &#x27;https://www.ipomatrix.com/ipo/lapl-automotive-ipo/2300?tab=boa&#x27;;
+  const win = window.open(url, &#x27;deepInspect&#x27;, &#x27;width=1200,height=900&#x27;);
+  if (!win) { console.error(&#x27;Popup blocked!&#x27;); return; }
+  console.log(&#x27;Loading page...&#x27;);
+  await new Promise(r =&gt; setTimeout(r, 5000));
+  console.log(&#x27;=== ALL &lt;a href&gt; ===&#x27;);
+  Array.from(win.document.querySelectorAll(&#x27;a[href]&#x27;)).forEach(a =&gt; {
+    console.log(JSON.stringify(a.textContent.trim().slice(0,30)), &#x27;-&gt;&#x27;, a.href);
+  });
+  console.log(&#x27;=== ALL &lt;img src&gt; ===&#x27;);
+  Array.from(win.document.querySelectorAll(&#x27;img[src]&#x27;)).forEach(img =&gt; {
+    console.log(JSON.stringify(img.alt || &#x27;&#x27;), &#x27;-&gt;&#x27;, img.src);
+  });
+  console.log(&#x27;=== Elements with CSS background-image ===&#x27;);
+  Array.from(win.document.querySelectorAll(&#x27;*&#x27;)).forEach(el =&gt; {
+    const bg = win.getComputedStyle(el).backgroundImage;
+    if (bg &amp;&amp; bg !== &#x27;none&#x27;) {
+      console.log(el.tagName, el.className, &#x27;-&gt;&#x27;, bg);
+    }
+  });
+  console.log(&#x27;=== Any element containing &quot;chittorgarh.net&quot; anywhere in outerHTML ===&#x27;);
+  const bodyHtml = win.document.body.outerHTML;
+  const matches = bodyHtml.match(/https?:\/\/[^\s&quot;&#x27;&lt;&gt;]*chittorgarh\.net[^\s&quot;&#x27;&lt;&gt;]*/g);
+  console.log(matches || &#x27;none found&#x27;);
+  console.log(&#x27;=== Any &lt;canvas&gt; elements (could be a PDF/image drawn via JS, invisible to text or &lt;img&gt; search) ===&#x27;);
+  const canvases = Array.from(win.document.querySelectorAll(&#x27;canvas&#x27;));
+  console.log(`Found ${canvases.length} canvas element(s).`);
+  canvases.forEach((c, i) =&gt; {
+    console.log(`Canvas #${i}: ${c.width}x${c.height}`);
+    try {
+      const dataUrl = c.toDataURL(&#x27;image/png&#x27;);
+      console.log(`  toDataURL() succeeded, length: ${dataUrl.length} chars (this means we COULD capture it as an image)`);
+      window[`__canvasCapture${i}`] = dataUrl;
+    } catch (e) {
+      console.log(`  toDataURL() FAILED: ${e.message} (likely a cross-origin/&quot;tainted canvas&quot; restriction)`);
+    }
+  });
+  console.log(&#x27;=== Full outerHTML of the &quot;AVAILABLE&quot; section area ===&#x27;);
+  const availEl = Array.from(win.document.querySelectorAll(&#x27;*&#x27;)).find(el =&gt; el.textContent.trim() === &#x27;AVAILABLE&#x27;);
+  if (availEl) {
+    console.log(availEl.closest(&#x27;div&#x27;)?.outerHTML?.slice(0, 1500) || &#x27;no parent div found&#x27;);
+  } else {
+    console.log(&#x27;AVAILABLE element not found&#x27;);
+  }
+  console.log(&#x27;=== Done ===&#x27;);
+})();
+</pre>
+        </div>
+
+        <h4 class="mini-h">What comes out</h4>
+        <p class="tool-p">Every page becomes one object. Discrete label and value fields land as key–value rows; naturally multi-row tables — financials, subscription by category, the lot-size ladder, objects of the issue — keep their own shape, so nothing is flattened away before it is analysed. Pages that fail are recorded with their error rather than dropped, so a gap in the dataset is always visible.</p>
+        <div class="codebox">
+          <div class="code-head">
+            <span class="fname">details_batch.json — one record, trimmed</span>
+            <span class="code-actions"><button onclick="copyCode(this,'code-sample')">Copy</button></span>
+          </div>
+          <pre class="code short" id="code-sample">{
+  &quot;company&quot;: &quot;Aegeus Technologies&quot;,
+  &quot;url&quot;: &quot;https://www.chittorgarh.com/ipo/sampark-india-logistics-ipo/2837/&quot;,
+  &quot;scraped_at&quot;: &quot;2026-08-14T06:27:48.824Z&quot;,
+  &quot;registrar&quot;: &quot;Skyline Financial Services Pvt.Ltd.&quot;,
+  &quot;lead_managers&quot;: [
+    &quot;Turnaround Corporate Advisors Pvt.Ltd.&quot;
+  ],
+  &quot;sections&quot;: [
+    {
+      &quot;title&quot;: &quot;IPO Details&quot;,
+      &quot;rows&quot;: [
+        [
+          &quot;IPO Date&quot;,
+          &quot;4 to 6 Aug, 2026&quot;
+        ],
+        [
+          &quot;Listed on&quot;,
+          &quot;Tue, Aug 11, 2026&quot;
+        ],
+        [
+          &quot;Face Value&quot;,
+          &quot;₹10 per share&quot;
+        ],
+        [
+          &quot;Price Band&quot;,
+          &quot;₹100 to ₹105&quot;
+        ],
+        [
+          &quot;Issue Price&quot;,
+          &quot;₹105 per share&quot;
+        ]
+      ]
+    },
+    {
+      &quot;title&quot;: &quot;Key Performance Indicator (KPI)&quot;,
+      &quot;rows&quot;: [
+        [
+          &quot;KPI&quot;,
+          &quot;Mar 31, 2026&quot;
+        ],
+        [
+          &quot;ROE&quot;,
+          &quot;29.93%&quot;
+        ],
+        [
+          &quot;ROCE&quot;,
+          &quot;24.75%&quot;
+        ],
+        [
+          &quot;Debt/Equity&quot;,
+          &quot;0.77&quot;
+        ],
+        [
+          &quot;RoNW&quot;,
+          &quot;29.93%&quot;
+        ]
+      ]
+    },
+    {
+      &quot;title&quot;: &quot;IPO Subscription Status&quot;,
+      &quot;rows&quot;: [
+        [
+          &quot;Category&quot;,
+          &quot;Subscription (x)&quot;,
+          &quot;Shares Offered&quot;,
+          &quot;Shares bid for&quot;,
+          &quot;Total Applications&quot;
+        ],
+        [
+          &quot;QIB (Ex Anchor)&quot;,
+          &quot;23.88&quot;,
+          &quot;3,92,400&quot;,
+          &quot;93,72,000&quot;,
+          &quot;0&quot;
+        ],
+        [
+          &quot;NII*&quot;,
+          &quot;48.05&quot;,
+          &quot;2,91,600&quot;,
+          &quot;1,40,12,400&quot;,
+          &quot;0&quot;
+        ],
+        [
+          &quot;bNII (&gt; ₹10L)&quot;,
+          &quot;55.23&quot;,
+          &quot;1,94,400&quot;,
+          &quot;1,07,37,600&quot;,
+          &quot;&quot;
+        ],
+        [
+          &quot;sNII (&lt; ₹10L)&quot;,
+          &quot;33.69&quot;,
+          &quot;97,200&quot;,
+          &quot;32,74,800&quot;,
+          &quot;&quot;
+        ]
+      ]
+    },
+    {
+      &quot;title&quot;: &quot;… 12 more sections&quot;,
+      &quot;rows&quot;: [
+        [
+          &quot;…&quot;
+        ]
+      ]
+    }
+  ]
+}</pre>
+        </div>
+
+        <div class="tool-stats">
+          <div><div class="lbl">Pages captured</div><div class="val">50</div></div>
+          <div><div class="lbl">Sections per page</div><div class="val">15</div></div>
+          <div><div class="lbl">Fields extracted</div><div class="val">78</div></div>
+          <div><div class="lbl">Usable after cleaning</div><div class="val">45</div></div>
+        </div>
+
+        <p class="tool-p" style="font-size:12.5px;color:var(--text-muted)">The tool only reads pages you are already able to open, and it does not bypass any access control. Check a site's terms before running it at volume, and keep the pace polite — the default gap between pages is there for a reason.</p>
+
+        <a class="tool-cta" href="../IPO/">See what this data produced →</a>
+      </div>
+    </div>
+
+
+<a class="backlink" href="../">← Back to the investment desk</a>
+</div>
+
+<footer>&copy; 2026 <span>ArticlesByArticle Investment</span> — research, tools and IPO analytics. Educational content only, not investment advice. Markets carry risk of loss.</footer>
+
+<script>
+
+function toggleMenu(){
+  document.getElementById('mobileMenu').classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  const m=document.getElementById('mobileMenu'),b=document.getElementById('hamburger');
+  if(m.classList.contains('open')&&!m.contains(e.target)&&!b.contains(e.target)){
+    m.classList.remove('open');b.classList.remove('open');}
+});
+
+
+function copyCode(btn,id){
+  const txt=document.getElementById(id).innerText;
+  const done=()=>{const o=btn.textContent;btn.textContent='Copied';btn.classList.add('done');
+    setTimeout(()=>{btn.textContent=o;btn.classList.remove('done');},1800);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done).catch(()=>fallback(txt,done));
+  } else fallback(txt,done);
+}
+function fallback(txt,done){
+  const ta=document.createElement('textarea');
+  ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
+  document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');done();}catch(e){}
+  document.body.removeChild(ta);
+}
+
+</script>
+</body>
+</html>
