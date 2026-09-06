@@ -916,27 +916,35 @@ async function submitRegister(){
   if(pw.length<8){alert('Password must be at least 8 characters.');return;}
   const btn=document.querySelector('#form-register .join-submit');
   btn.textContent='Submitting…';btn.disabled=true;
+  const ENDPOINT='https://formspree.io/f/xqejvdlb';
   try{
-    const FORMSPREE_ENDPOINT='xqejvdlb';
     const fd=new FormData();
     fd.append('_replyto',email);
-    fd.append('_subject','📝 New Author Registration, ArticlesByArticle');
+    fd.append('_subject','New Author Registration — ArticlesByArticle');
     fd.append('Full Name',fname+' '+lname);
-    fd.append('Email',email);fd.append('Mobile',mobile);
-    fd.append('Membership No',memno||'—');fd.append('Specialisation',spec);
-    fd.append('Bio',bio||'—');fd.append('Article PDF',pdf,pdf.name);
-    const res=await fetch(FORMSPREE_ENDPOINT,{method:'POST',body:fd,headers:{'Accept':'application/json'}});
+    fd.append('Email',email);
+    fd.append('Mobile',mobile);
+    fd.append('Membership No',memno||'—');
+    fd.append('Specialisation',spec);
+    fd.append('Bio',bio||'—');
+    fd.append('Article PDF',pdf,pdf.name);
+    const res=await fetch(ENDPOINT,{method:'POST',body:fd,headers:{'Accept':'application/json'}});
     if(res.ok){
       document.getElementById('joinBody').style.display='none';
       document.getElementById('joinSuccess').style.display='block';
-    }else{
-      const data=await res.json();
-      const msg=(data.errors||[]).map(e=>e.message).join(', ')||'Submission failed. Please try again.';
-      alert('Error: '+msg);btn.textContent='Create Author Account →';btn.disabled=false;
+      return;
     }
+    let msg='Submission failed (HTTP '+res.status+').';
+    try{const d=await res.json();if(d.errors&&d.errors.length)msg=d.errors.map(e=>e.message).join(', ');}catch(e){}
+    console.error('Formspree rejected submission:',res.status,msg);
+    alert('Error: '+msg);
   }catch(err){
-    alert('Network error. Please check your connection and try again.');
-    btn.textContent='Create Author Account →';btn.disabled=false;
+    console.error('Formspree request failed:',err,'endpoint:',ENDPOINT);
+    alert('Could not reach the server. Check the browser console for details.');
+  }finally{
+    if(document.getElementById('joinSuccess').style.display!=='block'){
+      btn.textContent='Create Author Account →';btn.disabled=false;
+    }
   }
 }
 
