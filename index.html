@@ -514,16 +514,11 @@ footer span{color:var(--gold)}
                 </select>
               </div>
             </div>
-            <div class="fld">
-              <label>Upload Your First Article (PDF) <span>*</span></label>
-              <div class="pdf-drop" id="pdfDrop">
-                <input type="file" accept=".pdf" id="pdfInput" onchange="handlePdfSelect(this)">
-                <span class="pdf-icon">📄</span>
-                <p>Drag & drop your PDF here or <strong>browse</strong></p>
-                <small>PDF only · Max 10 MB</small>
-                <div class="pdf-selected" id="pdfSelected"></div>
-              </div>
-            </div>
+          <div class="fld">
+  <label>Link to Your First Article <span>*</span></label>
+  <input type="url" placeholder="https://drive.google.com/..." id="reg-link">
+  <small style="display:block;font-size:11px;color:var(--text-muted);margin-top:5px;line-height:1.5">Upload your article (PDF or Word) to Google Drive, Dropbox or OneDrive and paste the share link here. Please set access to <strong>“Anyone with the link can view”</strong>.</small>
+</div>
             <div class="fld"><label>Short Bio</label><textarea placeholder="Tell readers about your expertise, firm, and focus areas..." id="reg-bio"></textarea></div>
             <div class="fld pw-toggle">
               <label>Create Password <span>*</span></label>
@@ -906,13 +901,12 @@ async function submitRegister(){
   const spec=document.getElementById('reg-spec').value;
   const bio=document.getElementById('reg-bio').value.trim();
   const pw=document.getElementById('reg-pw').value;
-  const pdf=document.getElementById('pdfInput').files[0];
   if(!fname){alert('Please enter your first name.');return;}
   if(!email||!email.includes('@')){alert('Please enter a valid email address.');return;}
   if(!mobile||mobile.replace(/\D/g,'').length<10){alert('Please enter a valid 10-digit mobile number.');return;}
   if(!spec){alert('Please select your specialisation.');return;}
-  if(!pdf){alert('Please upload your article as a PDF.');return;}
-  if(pdf.size>10*1024*1024){alert('PDF must be under 10 MB.');return;}
+  const link=document.getElementById('reg-link').value.trim();
+if(!link||!/^https?:\/\/.+\..+/.test(link)){alert('Please paste a valid link to your article.');return;}
   if(pw.length<8){alert('Password must be at least 8 characters.');return;}
   const btn=document.querySelector('#form-register .join-submit');
   btn.textContent='Submitting…';btn.disabled=true;
@@ -927,7 +921,7 @@ async function submitRegister(){
     fd.append('Membership No',memno||'—');
     fd.append('Specialisation',spec);
     fd.append('Bio',bio||'—');
-    fd.append('Article PDF',pdf,pdf.name);
+    fd.append('Article Link',link);
     const res=await fetch(ENDPOINT,{method:'POST',body:fd,headers:{'Accept':'application/json'}});
     if(res.ok){
       document.getElementById('joinBody').style.display='none';
