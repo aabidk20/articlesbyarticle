@@ -917,7 +917,7 @@ async function submitRegister(){
   const btn=document.querySelector('#form-register .join-submit');
   btn.textContent='Submitting…';btn.disabled=true;
   try{
-    const FORMSPREE_ENDPOINT='https://formspree.io/f/xqejvdlb';
+    const FORMSPREE_ENDPOINT='xqejvdlb';
     const fd=new FormData();
     fd.append('_replyto',email);
     fd.append('_subject','📝 New Author Registration, ArticlesByArticle');
